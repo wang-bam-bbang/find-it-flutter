@@ -7,5 +7,6 @@ class FindItRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
         RedirectRoute(path: '/', redirectTo: '/splash'),
         AutoRoute(path: '/splash', page: SplashRoute.page),
+        AutoRoute(path: '/login', page: LoginRoute.page),
       ];
 }
