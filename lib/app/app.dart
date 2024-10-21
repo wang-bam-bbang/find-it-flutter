@@ -1,16 +1,15 @@
+import 'package:find_it/app/router.dart';
 import 'package:flutter/material.dart';
+
+final _router = FindItRouter();
 
 class FindItApp extends StatelessWidget {
   const FindItApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp.router(
+      routerConfig: _router.config(),
     );
   }
 }
