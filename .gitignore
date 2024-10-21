@@ -45,3 +45,4 @@ app.*.map.json
 # Generated
 *.gr.dart
 *.g.dart
+*.config.dart
