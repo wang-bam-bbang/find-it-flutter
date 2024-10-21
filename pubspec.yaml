@@ -10,6 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
   auto_route: ^9.2.2
+  flutter_localizations:
+    sdk: flutter
+  slang_flutter: ^4.0.0
+  slang: ^4.0.0
 
 dev_dependencies:
   flutter_test:
