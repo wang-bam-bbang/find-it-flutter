@@ -9,11 +9,25 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  auto_route: ^9.2.2
+  flutter_localizations:
+    sdk: flutter
+  slang_flutter: ^4.0.0
+  slang: ^4.0.0
+  get_it: ^8.0.0
+  injectable: ^2.5.0
+  flutter_bloc: ^8.1.6
+  rxdart: ^0.28.0
+  freezed_annotation: ^2.4.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  build_runner: ^2.4.13
+  auto_route_generator: ^9.0.0
+  injectable_generator: ^2.6.2
+  freezed: ^2.5.7
 
 flutter:
   uses-material-design: true

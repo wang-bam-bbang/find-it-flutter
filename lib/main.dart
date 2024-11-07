@@ -1,20 +1,11 @@
+import 'package:find_it/app/app.dart';
+import 'package:find_it/app/di/locator.dart';
+import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
-    );
-  }
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureDependencies();
+  LocaleSettings.useDeviceLocale();
+  runApp(TranslationProvider(child: const FindItApp()));
 }
