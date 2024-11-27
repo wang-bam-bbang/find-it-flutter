@@ -1,5 +1,6 @@
 import 'package:find_it/app/di/locator.dart';
 import 'package:find_it/app/modules/user/presentation/bloc/auth_bloc.dart';
+import 'package:find_it/app/modules/user/presentation/bloc/user_bloc.dart';
 import 'package:find_it/app/router.dart';
 import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,11 @@ class _Providers extends StatelessWidget {
       providers: [
         BlocProvider(
           lazy: false,
-          create: (_) => sl<AuthBloc>()..add(const AuthEvent.init()),
+          create: (_) => sl<AuthBloc>()..add(const AuthEvent.load()),
+        ),
+        BlocProvider(
+          lazy: false,
+          create: (_) => sl<UserBloc>()..add(const UserEvent.init()),
         ),
       ],
       child: child,

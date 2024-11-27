@@ -1,6 +1,6 @@
 name: find_it
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -19,6 +19,13 @@ dependencies:
   flutter_bloc: ^8.1.6
   rxdart: ^0.28.0
   freezed_annotation: ^2.4.4
+  flutter_secure_storage:
+  dio:
+  retrofit:
+  json_annotation:
+  mutex:
+  flutter_web_auth_2:
+  flutter_dotenv:
 
 dev_dependencies:
   flutter_test:
@@ -28,6 +35,9 @@ dev_dependencies:
   auto_route_generator: ^9.0.0
   injectable_generator: ^2.6.2
   freezed: ^2.5.7
+  json_serializable:
+  retrofit_generator:
+  dotenv:
 
 flutter:
   uses-material-design: true
