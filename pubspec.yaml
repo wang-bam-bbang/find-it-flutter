@@ -19,13 +19,13 @@ dependencies:
   flutter_bloc: ^8.1.6
   rxdart: ^0.28.0
   freezed_annotation: ^2.4.4
-  flutter_secure_storage:
-  dio:
-  retrofit:
-  json_annotation:
-  mutex:
-  flutter_web_auth_2:
-  flutter_dotenv:
+  flutter_secure_storage: ^9.2.2
+  dio: ^5.7.0
+  retrofit: ^4.4.1
+  json_annotation: ^4.9.0
+  mutex: ^3.1.0
+  flutter_web_auth_2: ^4.0.2
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -35,9 +35,9 @@ dev_dependencies:
   auto_route_generator: ^9.0.0
   injectable_generator: ^2.6.2
   freezed: ^2.5.7
-  json_serializable:
-  retrofit_generator:
-  dotenv:
+  json_serializable: ^6.9.0
+  retrofit_generator: ^9.1.5
+  dotenv: ^4.2.0
 
 flutter:
   uses-material-design: true
