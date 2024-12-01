@@ -16,7 +16,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.router.replaceAll([const LoginRoute()]);
+      context.router.replaceAll([const ProfileRoute()]);
     });
   }
 
@@ -24,6 +24,9 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Palette.white,
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }
