@@ -11,11 +11,10 @@ part 'user_model.g.dart';
 class UserModel with _$UserModel implements UserEntity {
   const UserModel._();
   const factory UserModel({
-    required String email,
-    required String name,
-    // @JsonKey(name: 'student_id') String? id,
-    // @JsonKey(name: 'studentNumber') String? number,
     required String uuid,
+    required String name,
+    required DateTime createdAt,
+    required DateTime updatedAt,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

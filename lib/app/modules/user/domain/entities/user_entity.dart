@@ -1,11 +1,13 @@
 class UserEntity {
-  final String email;
-  final String name;
   final String uuid;
+  final String name;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   UserEntity({
-    required this.email,
-    required this.name,
     required this.uuid,
+    required this.name,
+    required this.createdAt,
+    required this.updatedAt,
   });
 }

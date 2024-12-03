@@ -16,8 +16,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   ) : super(const _Initial()) {
     on<_Init>((event, emit) async {
       return emit.forEach(
-        onData: (data) => data == null ? const _Initial() : _Done(data),
         _repository.me,
+        onData: (data) {
+          return _Done(data);
+        },
         onError: (_, __) => const _Initial(),
       );
     });

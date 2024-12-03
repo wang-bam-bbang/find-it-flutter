@@ -8,7 +8,7 @@ import 'package:find_it/app/modules/user/domain/repositories/user_repository.dar
 import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 
-@Singleton(as: UserRepository)
+@Singleton(as: UserRepository, dispose: RestUserRepository.dispose)
 class RestUserRepository implements UserRepository {
   final UserApi _api;
   final AuthRepository _authRepository;
@@ -26,8 +26,8 @@ class RestUserRepository implements UserRepository {
         return;
       }
       try {
-        // final user = await _api.info();
-        // _subject.add(user);
+        final user = await _api.info();
+        _subject.add(user);
       } catch (_) {
         _subject.add(null);
       }
@@ -40,13 +40,12 @@ class RestUserRepository implements UserRepository {
   @override
   Future<UserEntity?> refetchMe() async {
     try {
-      // final user = await _api.info();
-      // _subject.add(user);
-      // return user;
+      final user = await _api.info();
+      _subject.add(user);
+      return user;
     } catch (_) {
       _subject.add(null);
       return null;
     }
-    return null;
   }
 }
