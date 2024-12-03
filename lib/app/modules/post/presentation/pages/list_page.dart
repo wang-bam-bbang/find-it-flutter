@@ -86,7 +86,7 @@ class _ListPageState extends State<ListPage> {
               ],
             ),
           ),
-          _ListView(type: _currentContent),
+          _ListView(type: _currentContent, key: Key(_currentContent.name)),
         ],
       );
     } else {
@@ -138,6 +138,7 @@ class _ListPageState extends State<ListPage> {
 
 class _ListView extends StatelessWidget {
   const _ListView({
+    super.key,
     required PostType type,
   }) : _type = type;
 
