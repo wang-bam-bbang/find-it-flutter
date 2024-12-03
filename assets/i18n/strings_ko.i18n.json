@@ -1,5 +1,25 @@
 {
   "login": {
     "action": "지스트 메일로 로그인"
+  },
+  "list": {
+    "found": {
+      "label": "찾았어요",
+      "title": "최근 찾은 분실물"
+    },
+    "lost": {
+      "label": "잃어버렸어요",
+      "title": "최근 잃어버린 분실물"
+    }
+  },
+  "category(context=ItemCategory)": {
+    "electronics": "전자제품",
+    "card": "카드",
+    "clothing": "의류",
+    "bag": "가방",
+    "wallet": "지갑",
+    "accessories": "액세서리",
+    "document": "문서",
+    "etc": "기타"
   }
 }

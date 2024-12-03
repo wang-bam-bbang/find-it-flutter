@@ -1,13 +1,17 @@
 import 'package:dio/dio.dart';
-import 'package:find_it/app/modules/post/data/models/post_model.dart';
+import 'package:find_it/app/modules/post/data/models/post_list_model.dart';
+import 'package:find_it/app/modules/post/data/models/post_list_query_model.dart';
+import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'post_api.g.dart';
 
+@injectable
 @RestApi(baseUrl: 'post/')
 abstract class PostApi {
-  factory PostApi(Dio dio, {String baseUrl}) = _PostApi;
+  @factoryMethod
+  factory PostApi(Dio dio) = _PostApi;
 
   @GET('list')
-  Future<List<PostModel>> getPosts();
+  Future<PostListModel> getPosts(@Queries() PostListQueryModel query);
 }

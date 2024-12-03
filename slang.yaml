@@ -2,4 +2,7 @@ base_locale: en
 input_directory: assets/i18n
 timestamp: false
 contexts:
+  ItemCategory:
+    generate_enum: false
 imports:
+  - 'package:find_it/app/modules/post/domain/enums/item_category.dart'

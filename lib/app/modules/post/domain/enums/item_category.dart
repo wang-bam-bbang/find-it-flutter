@@ -1,4 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 @JsonEnum(fieldRename: FieldRename.screamingSnake)
-enum PostType { found, lost }
+enum ItemCategory {
+  electronics,
+  card,
+  clothing,
+  bag,
+  wallet,
+  accessories,
+  document,
+  etc,
+}
