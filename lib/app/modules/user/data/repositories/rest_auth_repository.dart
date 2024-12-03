@@ -19,18 +19,15 @@ class RestAuthRepository implements AuthRepository {
   @override
   Future<void> login() async {
     final code = await _oAuthRepository.getAuthorizationCode();
-    print(code.authCode);
     final result = await _api.login(code.authCode);
-    print('result: $result');
-    // print('result.accessToken: ${result.accessToken}');
-    // await _tokenRepository.saveToken(result.accessToken);
+    await _tokenRepository.saveToken(result.accessToken);
   }
 
   @override
   Stream<bool> get isSignedIn => _tokenRepository.token.asyncMap(
         (_) async {
           try {
-            // await _api.info();
+            await _api.info();
             return true;
           } catch (_) {
             return false;

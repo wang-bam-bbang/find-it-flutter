@@ -82,16 +82,12 @@ class _Layout extends StatelessWidget {
             if (authenticated) ...[
               const SizedBox(height: 20),
               TextButton(
-                child: const Text("로그인됨"),
-                onPressed: () {},
+                child: const Text("로그아웃"),
+                onPressed: () {
+                  context.read<AuthBloc>().add(const AuthEvent.logout());
+                },
               ),
             ],
-            const SizedBox(height: 40),
-            if (authenticated)
-              TextButton(
-                onPressed: () {},
-                child: const Text("Hello"),
-              ),
           ],
         );
       },
@@ -121,14 +117,6 @@ class _Profile extends StatelessWidget {
             color: Palette.black,
             fontSize: 28,
             fontWeight: FontWeight.w700,
-          ),
-        ),
-        Text(
-          user.email,
-          style: const TextStyle(
-            color: Palette.black,
-            fontSize: 20,
-            fontWeight: FontWeight.w400,
           ),
         ),
       ],
