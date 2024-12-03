@@ -12,11 +12,10 @@ abstract class UserApi {
   @factoryMethod
   factory UserApi(Dio dio) = _UserApi;
 
-  @GET('login')
-  Future<TokenModel> login(
-    @Query('code') String code, [
-    @Query('type') String type = 'flutter',
-  ]);
+  @GET('callback')
+  Future<String> login(
+    @Query('code') String code,
+  );
 
   @POST('refresh')
   @Extra({AuthorizeInterceptor.retriedKey: true})

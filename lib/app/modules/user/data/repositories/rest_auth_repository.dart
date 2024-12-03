@@ -19,8 +19,11 @@ class RestAuthRepository implements AuthRepository {
   @override
   Future<void> login() async {
     final code = await _oAuthRepository.getAuthorizationCode();
+    print(code.authCode);
     final result = await _api.login(code.authCode);
-    await _tokenRepository.saveToken(result.accessToken);
+    print('result: $result');
+    // print('result.accessToken: ${result.accessToken}');
+    // await _tokenRepository.saveToken(result.accessToken);
   }
 
   @override
