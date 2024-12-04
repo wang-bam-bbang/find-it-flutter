@@ -1,11 +1,17 @@
-class PostEntity {
-  final String id;
-  final String title;
-  final String content;
+import 'package:find_it/app/modules/post/domain/enums/content_type.dart';
+import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
+import 'package:find_it/app/modules/post/domain/enums/post_status.dart';
+import 'package:find_it/app/modules/user/domain/entities/public_user_entity.dart';
 
-  PostEntity({
-    required this.id,
-    required this.title,
-    required this.content,
-  });
+abstract class PostEntity {
+  int get id;
+  PostType get type;
+  String get title;
+  String get description;
+  String get location;
+  ItemCategory get category;
+  PostStatus get status;
+  PublicUserEntity get author;
+  DateTime get createdAt;
+  DateTime get updatedAt;
 }

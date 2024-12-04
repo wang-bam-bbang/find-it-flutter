@@ -7,7 +7,7 @@ class DetailPage extends StatelessWidget {
   final String itemType;
   final String location;
   final String content;
-  final ContentType contentType;
+  final PostType contentType;
 
   const DetailPage({
     super.key,
@@ -52,7 +52,7 @@ class DetailPage extends StatelessWidget {
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 8),
-              if (contentType == ContentType.found) ...[
+              if (contentType == PostType.found) ...[
                 Text(
                   '발견 위치: $location',
                   style: const TextStyle(fontSize: 16),
@@ -77,7 +77,7 @@ class DetailPage extends StatelessWidget {
                 ),
                 child: const Center(child: Text('사진 영역')),
               ),
-              if (contentType == ContentType.found) ...[
+              if (contentType == PostType.found) ...[
                 const SizedBox(height: 16),
                 Container(
                   height: 250,

@@ -1,8 +1,13 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:find_it/app/di/locator.dart';
 import 'package:find_it/app/modules/post/domain/enums/content_type.dart';
+import 'package:find_it/app/modules/post/presentation/bloc/post_list_bloc.dart';
 import 'package:find_it/app/modules/post/presentation/pages/detail_page.dart';
 import 'package:find_it/app/modules/user/presentation/pages/profile_page.dart';
+import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 @RoutePage()
 class ListPage extends StatefulWidget {
@@ -14,7 +19,7 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   int _selectedIndex = 1;
-  ContentType _currentContent = ContentType.found;
+  PostType _currentContent = PostType.found;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -37,14 +42,14 @@ class _ListPageState extends State<ListPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _currentContent = ContentType.found;
+                        _currentContent = PostType.found;
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _currentContent == ContentType.found
+                      backgroundColor: _currentContent == PostType.found
                           ? Colors.blue
                           : Colors.grey[200],
-                      foregroundColor: _currentContent == ContentType.found
+                      foregroundColor: _currentContent == PostType.found
                           ? Colors.white
                           : Colors.black,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -52,7 +57,7 @@ class _ListPageState extends State<ListPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text('찾았어요'),
+                    child: Text(context.t.list.found.label),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -60,14 +65,14 @@ class _ListPageState extends State<ListPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _currentContent = ContentType.lost;
+                        _currentContent = PostType.lost;
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _currentContent == ContentType.lost
+                      backgroundColor: _currentContent == PostType.lost
                           ? Colors.blue
                           : Colors.grey[200],
-                      foregroundColor: _currentContent == ContentType.lost
+                      foregroundColor: _currentContent == PostType.lost
                           ? Colors.white
                           : Colors.black,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -75,67 +80,13 @@ class _ListPageState extends State<ListPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text('잃어버렸어요'),
+                    child: Text(context.t.list.lost.label),
                   ),
                 ),
               ],
             ),
           ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: SectionTitle(
-              title: _currentContent == ContentType.found
-                  ? '최근 찾은 분실물'
-                  : '최근 잃어버린 분실물',
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              physics: const ClampingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              itemCount: 20,
-              itemBuilder: (context, index) {
-                String title = _currentContent == ContentType.found
-                    ? '지갑 $index'
-                    : '우산 $index';
-                String location =
-                    _currentContent == ContentType.found ? '생명과학동 1층' : '중앙도서관';
-                String date =
-                    _currentContent == ContentType.found ? '3일 전' : '1일 전';
-                String itemType =
-                    _currentContent == ContentType.found ? '지갑' : '우산';
-
-                return ListTile(
-                  contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  title: Text(
-                    title,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text('$location\n$date'),
-                  isThreeLine: true,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailPage(
-                          title: title,
-                          author: '작성자 $index',
-                          itemType: itemType,
-                          location: location,
-                          content: '여기에 분실물에 대한 상세 설명이 들어갑니다.',
-                          contentType: _currentContent,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+          _ListView(type: _currentContent, key: Key(_currentContent.name)),
         ],
       );
     } else {
@@ -180,6 +131,80 @@ class _ListPageState extends State<ListPage> {
           BottomNavigationBarItem(icon: Icon(Icons.map), label: '지도'),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '메인'),
         ],
+      ),
+    );
+  }
+}
+
+class _ListView extends StatelessWidget {
+  const _ListView({
+    super.key,
+    required PostType type,
+  }) : _type = type;
+
+  final PostType _type;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<PostListBloc>()..add(PostListEvent.fetch(_type)),
+      child: Expanded(
+        child: Column(
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: SectionTitle(
+                title: _type == PostType.found
+                    ? context.t.list.found.title
+                    : context.t.list.lost.title,
+              ),
+            ),
+            Expanded(child: _buildList()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildList() {
+    return BlocBuilder<PostListBloc, PostListState>(
+      builder: (context, state) => ListView.builder(
+        physics: const ClampingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        itemCount: state.list.length,
+        itemBuilder: (context, index) {
+          final item = state.list[index];
+
+          return ListTile(
+            contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            title: Text(
+              item.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(
+                '${item.location}\n${DateFormat.yMd().format(item.createdAt)}'),
+            isThreeLine: true,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailPage(
+                    title: item.title,
+                    author: item.author.name,
+                    itemType: context.t.category(context: item.category),
+                    location: item.location,
+                    content: item.description,
+                    contentType: _type,
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

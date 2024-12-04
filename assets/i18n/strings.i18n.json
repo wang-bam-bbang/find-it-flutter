@@ -1,5 +1,25 @@
 {
   "login": {
     "action": "Login with GIST mail"
+  },
+  "list": {
+    "found": {
+      "label": "Found",
+      "title": "Recently found lost items"
+    },
+    "lost": {
+      "label": "Lost",
+      "title": "Recently lost items"
+    }
+  },
+  "category(context=ItemCategory)": {
+    "electronics": "Electronics",
+    "card": "card",
+    "clothing": "clothing",
+    "bag": "bag",
+    "wallet": "wallet",
+    "accessories": "accessories",
+    "document": "document",
+    "etc": "etc"
   }
 }
