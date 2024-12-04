@@ -1,4 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 @JsonEnum(fieldRename: FieldRename.screamingSnake)
-enum PostType { found, lost }
+enum PostStatus { inProgress, resolved, cancelled }
