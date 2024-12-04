@@ -78,16 +78,6 @@ class _Layout extends StatelessWidget {
                   ],
                 ),
               ),
-            const SizedBox(height: 40),
-            if (authenticated) ...[
-              const SizedBox(height: 20),
-              TextButton(
-                child: const Text("로그아웃"),
-                onPressed: () {
-                  context.read<AuthBloc>().add(const AuthEvent.logout());
-                },
-              ),
-            ],
           ],
         );
       },
@@ -102,21 +92,39 @@ class _Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const SizedBox(height: 30),
-        const Icon(
-          Icons.account_circle,
-          size: 100,
-          color: Palette.black,
-        ),
-        const SizedBox(height: 10),
-        Text(
-          user.name,
-          style: const TextStyle(
+        Row(children: [
+          const Icon(
+            Icons.account_circle,
+            size: 100,
             color: Palette.black,
-            fontSize: 28,
-            fontWeight: FontWeight.w700,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            user.name,
+            style: const TextStyle(
+              color: Palette.black,
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ]),
+        ElevatedButton(
+          onPressed: () {
+            context.read<AuthBloc>().add(const AuthEvent.logout());
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Palette.white,
+            side: const BorderSide(width: 0.2),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: const Text(
+            "로그아웃",
+            style: TextStyle(fontSize: 18),
           ),
         ),
       ],
