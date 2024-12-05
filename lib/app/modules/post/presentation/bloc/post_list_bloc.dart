@@ -21,12 +21,23 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
         emit(_Error([], e.toString()));
       }
     });
+
+    on<_FetchMyPost>((event, emit) async {
+      emit(const _Loading());
+      try {
+        final posts = await _repository.getMyPosts(type: event.type);
+        emit(_Loaded(posts));
+      } catch (e) {
+        emit(_Error([], e.toString()));
+      }
+    });
   }
 }
 
 @freezed
 class PostListEvent with _$PostListEvent {
   const factory PostListEvent.fetch(PostType type) = _Fetch;
+  const factory PostListEvent.fetchMyPost(PostType type) = _FetchMyPost;
 }
 
 @freezed

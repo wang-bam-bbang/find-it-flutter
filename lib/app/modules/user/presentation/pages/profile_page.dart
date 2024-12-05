@@ -1,12 +1,18 @@
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/material.dart';
+import 'package:find_it/app/di/locator.dart';
+import 'package:find_it/app/modules/post/domain/enums/content_type.dart';
+import 'package:find_it/app/modules/post/presentation/bloc/post_list_bloc.dart';
+import 'package:find_it/app/modules/post/presentation/pages/detail_page.dart';
 import 'package:find_it/app/modules/user/domain/entities/user_entity.dart';
 import 'package:find_it/app/modules/user/presentation/bloc/auth_bloc.dart';
 import 'package:find_it/app/modules/user/presentation/bloc/user_bloc.dart';
 import 'package:find_it/app/values/palette.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:find_it/gen/strings.g.dart';
 
 @RoutePage()
 class ProfilePage extends StatefulWidget {
@@ -32,12 +38,10 @@ class _ProfilePageState extends State<ProfilePage>
         centerTitle: true,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      body: const SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-            child: _Layout(),
-          ),
+      body: const SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          child: _Layout(),
         ),
       ),
     );
@@ -55,9 +59,10 @@ class _Layout extends StatelessWidget {
         final authenticated = state.user != null;
         return Column(
           children: [
-            if (authenticated)
-              _Profile(user: state.user!)
-            else
+            if (authenticated) ...[
+              _Profile(user: state.user!),
+              const Expanded(child: _List()),
+            ] else
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, authState) => Stack(
                   alignment: Alignment.center,
@@ -126,6 +131,175 @@ class _Profile extends StatelessWidget {
             "로그아웃",
             style: TextStyle(fontSize: 18),
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class _List extends StatefulWidget {
+  const _List({super.key});
+
+  @override
+  State<_List> createState() => _ListState();
+}
+
+class _ListState extends State<_List> {
+  PostType _currentContent = PostType.found;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 16),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text('내가 작성한 게시글', style: TextStyle(fontSize: 20)),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentContent = PostType.found;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _currentContent == PostType.found
+                        ? Colors.blue
+                        : Colors.grey[200],
+                    foregroundColor: _currentContent == PostType.found
+                        ? Colors.white
+                        : Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(context.t.list.found.label),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentContent = PostType.lost;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _currentContent == PostType.lost
+                        ? Colors.blue
+                        : Colors.grey[200],
+                    foregroundColor: _currentContent == PostType.lost
+                        ? Colors.white
+                        : Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(context.t.list.lost.label),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child:
+              _ListView(type: _currentContent, key: Key(_currentContent.name)),
+        )
+      ],
+    );
+  }
+}
+
+class _ListView extends StatelessWidget {
+  const _ListView({
+    super.key,
+    required PostType type,
+  }) : _type = type;
+
+  final PostType _type;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<PostListBloc>()..add(PostListEvent.fetchMyPost(_type)),
+      child: Column(
+        children: [
+          Expanded(child: _buildList()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildList() {
+    return BlocBuilder<PostListBloc, PostListState>(
+      builder: (context, state) => ListView.builder(
+        physics: const ClampingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        itemCount: state.list.length,
+        itemBuilder: (context, index) {
+          final item = state.list[index];
+
+          return ListTile(
+            contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            title: Text(
+              item.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(
+                '${item.location}\n${DateFormat.yMd().format(item.createdAt)}'),
+            isThreeLine: true,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailPage(
+                    title: item.title,
+                    author: item.author.name,
+                    itemType: context.t.category(context: item.category),
+                    location: item.location,
+                    content: item.description,
+                    contentType: _type,
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class SectionTitle extends StatelessWidget {
+  final String title;
+
+  const SectionTitle({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        TextButton(
+          onPressed: () {},
+          child: const Text('더보기 >'),
         ),
       ],
     );
