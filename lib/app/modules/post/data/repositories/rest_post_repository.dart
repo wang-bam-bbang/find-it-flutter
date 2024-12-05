@@ -16,4 +16,10 @@ class RestPostRepository implements PostRepository {
     final result = await _api.getPosts(PostListQueryModel(type: type));
     return result.list;
   }
+
+  @override
+  Future<List<PostEntity>> getMyPosts({required PostType type}) async {
+    final result = await _api.getMyPosts(PostListQueryModel(type: type));
+    return result.list;
+  }
 }

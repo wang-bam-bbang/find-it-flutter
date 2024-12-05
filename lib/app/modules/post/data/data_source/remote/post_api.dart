@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:find_it/app/modules/post/data/models/my_posts_model.dart';
 import 'package:find_it/app/modules/post/data/models/post_list_model.dart';
 import 'package:find_it/app/modules/post/data/models/post_list_query_model.dart';
 import 'package:injectable/injectable.dart';
@@ -14,4 +15,7 @@ abstract class PostApi {
 
   @GET('list')
   Future<PostListModel> getPosts(@Queries() PostListQueryModel query);
+
+  @GET('my-posts')
+  Future<MyPostsModel> getMyPosts(@Queries() PostListQueryModel query);
 }
