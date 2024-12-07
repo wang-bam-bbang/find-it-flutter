@@ -4,5 +4,8 @@ timestamp: false
 contexts:
   ItemCategory:
     generate_enum: false
+  PostType:
+    generate_enum: false
 imports:
   - 'package:find_it/app/modules/post/domain/enums/item_category.dart'
+  - 'package:find_it/app/modules/post/domain/enums/post_type.dart'
