@@ -21,5 +21,21 @@
     "accessories": "액세서리",
     "document": "문서",
     "etc": "기타"
+  },
+  "post_type(context=PostType)": {
+    "lost": "분실물을 찾아요",
+    "found": "분실물을 발견했어요"
+  },
+  "create": {
+    "page_title": "게시글 작성",
+    "title": "게시글 제목",
+    "post_type": "게시글 유형",
+    "item_type": "분실문 종류",
+    "location_found": "분실물 발견 위치",
+    "location_lost": "분실 예상 위치",
+    "description": "설명",
+    "image": "이미지 업로드",
+    "image_empty": "이미지가 없습니다.",
+    "submit": "작성하기"
   }
 }

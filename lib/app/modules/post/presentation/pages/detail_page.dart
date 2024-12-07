@@ -1,4 +1,4 @@
-import 'package:find_it/app/modules/post/domain/enums/content_type.dart';
+import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:flutter/material.dart';
 
 class DetailPage extends StatelessWidget {

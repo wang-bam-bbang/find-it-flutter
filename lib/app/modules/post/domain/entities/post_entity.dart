@@ -1,4 +1,4 @@
-import 'package:find_it/app/modules/post/domain/enums/content_type.dart';
+import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_status.dart';
 import 'package:find_it/app/modules/user/domain/entities/public_user_entity.dart';

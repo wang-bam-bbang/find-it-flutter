@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:find_it/app/di/locator.dart';
-import 'package:find_it/app/modules/post/domain/enums/content_type.dart';
+import 'package:find_it/app/modules/post/domain/enums/post_type.dart' as domain;
 import 'package:find_it/app/modules/post/presentation/bloc/post_list_bloc.dart';
+import 'package:find_it/app/modules/post/presentation/pages/create_post.dart';
 import 'package:find_it/app/modules/post/presentation/pages/detail_page.dart';
+import 'package:find_it/app/modules/user/presentation/bloc/user_bloc.dart';
 import 'package:find_it/app/modules/user/presentation/pages/profile_page.dart';
 import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +21,7 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   int _selectedIndex = 1;
-  PostType _currentContent = PostType.found;
+  domain.PostType _currentContent = domain.PostType.found;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -42,14 +44,14 @@ class _ListPageState extends State<ListPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _currentContent = PostType.found;
+                        _currentContent = domain.PostType.found;
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _currentContent == PostType.found
+                      backgroundColor: _currentContent == domain.PostType.found
                           ? Colors.blue
                           : Colors.grey[200],
-                      foregroundColor: _currentContent == PostType.found
+                      foregroundColor: _currentContent == domain.PostType.found
                           ? Colors.white
                           : Colors.black,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -65,14 +67,14 @@ class _ListPageState extends State<ListPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _currentContent = PostType.lost;
+                        _currentContent = domain.PostType.lost;
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _currentContent == PostType.lost
+                      backgroundColor: _currentContent == domain.PostType.lost
                           ? Colors.blue
                           : Colors.grey[200],
-                      foregroundColor: _currentContent == PostType.lost
+                      foregroundColor: _currentContent == domain.PostType.lost
                           ? Colors.white
                           : Colors.black,
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -96,53 +98,68 @@ class _ListPageState extends State<ListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        backgroundColor: Colors.white,
-        title: const Text('Find-it'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProfilePage()),
-              );
-            },
-          ),
-        ],
-      ),
-      body: _buildBody(),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: '지도'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: '메인'),
-        ],
-      ),
-    );
+    return BlocBuilder<UserBloc, UserState>(
+        buildWhen: (_, c) => c.mapOrNull(done: (v) => true) ?? false,
+        builder: (context, state) {
+          final authenticated = state.user != null;
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              elevation: 0,
+              surfaceTintColor: Colors.transparent,
+              backgroundColor: Colors.white,
+              title: const Text('Find-it'),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.create),
+                  onPressed: () {
+                    if (!authenticated) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const ProfilePage()));
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CreatePostPage()),
+                      );
+                    }
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.person),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ProfilePage()),
+                    );
+                  },
+                ),
+              ],
+            ),
+            body: _buildBody(),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              items: const [
+                BottomNavigationBarItem(icon: Icon(Icons.map), label: '지도'),
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: '메인'),
+              ],
+            ),
+          );
+        });
   }
 }
 
 class _ListView extends StatelessWidget {
   const _ListView({
     super.key,
-    required PostType type,
+    required domain.PostType type,
   }) : _type = type;
 
-  final PostType _type;
+  final domain.PostType _type;
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +172,7 @@ class _ListView extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: SectionTitle(
-                title: _type == PostType.found
+                title: _type == domain.PostType.found
                     ? context.t.list.found.title
                     : context.t.list.lost.title,
               ),

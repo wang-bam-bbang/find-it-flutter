@@ -1,4 +1,4 @@
-import 'package:find_it/app/modules/post/domain/enums/content_type.dart';
+import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'post_list_query_model.freezed.dart';

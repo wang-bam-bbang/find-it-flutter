@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:find_it/app/di/locator.dart';
-import 'package:find_it/app/modules/post/domain/enums/content_type.dart';
+import 'package:find_it/app/modules/post/domain/enums/post_type.dart' as domain;
 import 'package:find_it/app/modules/post/presentation/bloc/post_list_bloc.dart';
 import 'package:find_it/app/modules/post/presentation/pages/detail_page.dart';
 import 'package:find_it/app/modules/user/domain/entities/user_entity.dart';
@@ -138,14 +138,14 @@ class _Profile extends StatelessWidget {
 }
 
 class _List extends StatefulWidget {
-  const _List({super.key});
+  const _List();
 
   @override
   State<_List> createState() => _ListState();
 }
 
 class _ListState extends State<_List> {
-  PostType _currentContent = PostType.found;
+  domain.PostType _currentContent = domain.PostType.found;
 
   @override
   Widget build(BuildContext context) {
@@ -165,14 +165,14 @@ class _ListState extends State<_List> {
                 child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      _currentContent = PostType.found;
+                      _currentContent = domain.PostType.found;
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _currentContent == PostType.found
+                    backgroundColor: _currentContent == domain.PostType.found
                         ? Colors.blue
                         : Colors.grey[200],
-                    foregroundColor: _currentContent == PostType.found
+                    foregroundColor: _currentContent == domain.PostType.found
                         ? Colors.white
                         : Colors.black,
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -188,14 +188,14 @@ class _ListState extends State<_List> {
                 child: ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      _currentContent = PostType.lost;
+                      _currentContent = domain.PostType.lost;
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _currentContent == PostType.lost
+                    backgroundColor: _currentContent == domain.PostType.lost
                         ? Colors.blue
                         : Colors.grey[200],
-                    foregroundColor: _currentContent == PostType.lost
+                    foregroundColor: _currentContent == domain.PostType.lost
                         ? Colors.white
                         : Colors.black,
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -221,10 +221,10 @@ class _ListState extends State<_List> {
 class _ListView extends StatelessWidget {
   const _ListView({
     super.key,
-    required PostType type,
+    required domain.PostType type,
   }) : _type = type;
 
-  final PostType _type;
+  final domain.PostType _type;
 
   @override
   Widget build(BuildContext context) {
