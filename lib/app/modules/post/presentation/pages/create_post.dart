@@ -4,9 +4,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:find_it/app/di/locator.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_creation_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
-import 'package:find_it/app/modules/post/domain/enums/post_type.dart' as domain;
+import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:find_it/app/modules/post/presentation/bloc/create_post_bloc.dart';
-import 'package:find_it/gen/strings.g.dart' as strings;
+import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,7 +32,7 @@ class _CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<_CreatePostPage> {
-  domain.PostType? selectedType;
+  PostType? selectedType;
   ItemCategory? selectedCategory;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -40,7 +40,7 @@ class _CreatePostPageState extends State<_CreatePostPage> {
   List<XFile> uploadedImages = [];
 
   final List<ItemCategory> categories = ItemCategory.values;
-  final List<domain.PostType> postTypes = domain.PostType.values;
+  final List<PostType> postTypes = PostType.values;
 
   Future<void> pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -102,13 +102,13 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<domain.PostType>(
+              DropdownButtonFormField<PostType>(
                 value: selectedType,
-                items: domain.PostType.values
+                items: PostType.values
                     .map((type) => DropdownMenuItem(
                           value: type,
-                          child: Text(context.t.post_type(
-                              context: strings.PostType.values[type.index])),
+                          child: Text(context.t
+                              .post_type(context: PostType.values[type.index])),
                         ))
                     .toList(),
                 onChanged: (value) {
@@ -129,7 +129,7 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                         TextField(
                           controller: locationController,
                           decoration: InputDecoration(
-                            labelText: selectedType == domain.PostType.lost
+                            labelText: selectedType == PostType.lost
                                 ? context.t.create.location_found
                                 : context.t.create.location_lost,
                             border: const OutlineInputBorder(),
