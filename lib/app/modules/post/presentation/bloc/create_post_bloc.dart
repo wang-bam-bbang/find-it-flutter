@@ -16,7 +16,7 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
         await _repository.createPost(post: event.entity);
         emit(const _Loaded());
       } catch (e) {
-        emit(const _Error());
+        emit(_Error(e.toString()));
       }
     });
   }
@@ -34,7 +34,7 @@ class CreatePostState with _$CreatePostState {
   const factory CreatePostState.initial() = _Initial;
   const factory CreatePostState.loading() = _Loading;
   const factory CreatePostState.loaded() = _Loaded;
-  const factory CreatePostState.error() = _Error;
+  const factory CreatePostState.error(String error) = _Error;
 
   bool get isLoaded => this is _Loaded;
 }
