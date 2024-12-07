@@ -1,3 +1,4 @@
+import 'package:find_it/app/modules/post/domain/entities/post_creation_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -18,4 +19,14 @@ class PostCreationModel with _$PostCreationModel {
 
   factory PostCreationModel.fromJson(Map<String, dynamic> json) =>
       _$PostCreationModelFromJson(json);
+  factory PostCreationModel.fromEntity(
+          {required PostCreationEntity entity, required List<String> images}) =>
+      PostCreationModel(
+        title: entity.title,
+        location: entity.location,
+        description: entity.description,
+        type: entity.type,
+        category: entity.itemType,
+        images: images,
+      );
 }

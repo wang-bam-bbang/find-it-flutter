@@ -1,4 +1,5 @@
 import 'package:find_it/app/modules/post/domain/entities/post_creation_entity.dart';
+import 'package:find_it/app/modules/post/domain/repositories/post_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -7,9 +8,16 @@ part 'create_post_bloc.freezed.dart';
 
 @injectable
 class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
-  CreatePostBloc() : super(const _Initial()) {
+  final PostRepository _repository;
+  CreatePostBloc(this._repository) : super(const _Initial()) {
     on<_Create>((event, emit) async {
       emit(const _Loading());
+      try {
+        await _repository.createPost(post: event.entity);
+        emit(const _Loaded());
+      } catch (e) {
+        emit(const _Error());
+      }
     });
   }
 }
