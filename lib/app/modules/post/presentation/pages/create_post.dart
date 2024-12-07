@@ -6,6 +6,7 @@ import 'package:find_it/app/modules/post/domain/entities/post_creation_entity.da
 import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:find_it/app/modules/post/presentation/bloc/create_post_bloc.dart';
+import 'package:find_it/app/router.gr.dart';
 import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -80,6 +81,7 @@ class _CreatePostPageState extends State<_CreatePostPage> {
     await blocker;
     if (!mounted) return;
     context.maybePop();
+    DetailRoute(post: bloc.state.post).push(context);
   }
 
   @override
