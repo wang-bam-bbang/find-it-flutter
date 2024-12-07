@@ -1,21 +1,37 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:find_it/app/di/locator.dart';
+import 'package:find_it/app/modules/post/domain/entities/post_creation_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart' as domain;
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:find_it/app/modules/post/presentation/bloc/create_post_bloc.dart';
 import 'package:find_it/gen/strings.g.dart' as strings;
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 @RoutePage()
-class CreatePostPage extends StatefulWidget {
+class CreatePostPage extends StatelessWidget {
   const CreatePostPage({super.key});
 
   @override
-  CreatePostPageState createState() => CreatePostPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<CreatePostBloc>(),
+      child: const _CreatePostPage(),
+    );
+  }
 }
 
-class CreatePostPageState extends State<CreatePostPage> {
+class _CreatePostPage extends StatefulWidget {
+  const _CreatePostPage();
+
+  @override
+  _CreatePostPageState createState() => _CreatePostPageState();
+}
+
+class _CreatePostPageState extends State<_CreatePostPage> {
   domain.PostType? selectedType;
   ItemCategory? selectedCategory;
   final TextEditingController titleController = TextEditingController();
@@ -34,6 +50,36 @@ class CreatePostPageState extends State<CreatePostPage> {
         uploadedImages.add(image);
       });
     }
+  }
+
+  Future<void> _create() async {
+    if (selectedType == null) return;
+    if (selectedCategory == null) return;
+    if (titleController.text.isEmpty) return;
+    if (descriptionController.text.isEmpty) return;
+
+    PostCreationEntity(
+      title: titleController.text,
+      type: selectedType!,
+      location: locationController.text,
+      itemType: selectedCategory!,
+      description: descriptionController.text,
+      image: uploadedImages.map((img) => File(img.path)).toList(),
+    );
+
+    final bloc = context.read<CreatePostBloc>();
+    final blocker = bloc.stream.firstWhere((s) => s.isLoaded);
+    bloc.add(CreatePostEvent.create(PostCreationEntity(
+      title: titleController.text,
+      type: selectedType!,
+      location: locationController.text,
+      itemType: selectedCategory!,
+      description: descriptionController.text,
+      image: uploadedImages.map((img) => File(img.path)).toList(),
+    )));
+    await blocker;
+    if (!mounted) return;
+    context.maybePop();
   }
 
   @override
@@ -141,24 +187,7 @@ class CreatePostPageState extends State<CreatePostPage> {
                   : Text(context.t.create.image_empty),
               const SizedBox(height: 32),
               ElevatedButton(
-                onPressed: () {
-                  final postData = {
-                    "type": selectedType,
-                    "title": titleController.text,
-                    "description": descriptionController.text,
-                    "images": uploadedImages.map((img) => img.path).toList(),
-                    "location": locationController.text,
-                    "category": selectedCategory?.name,
-                  };
-                  if (postData["type"] == null ||
-                      postData["title"] == null ||
-                      postData["location"] == null ||
-                      postData["category"] == null) {
-                    print("Please fill all required fields");
-                  } else {
-                    print(postData);
-                  }
-                },
+                onPressed: _create,
                 child: Text(context.t.create.submit),
               ),
             ],
