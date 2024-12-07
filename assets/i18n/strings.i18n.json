@@ -21,5 +21,21 @@
     "accessories": "accessories",
     "document": "document",
     "etc": "etc"
+  },
+  "post_type(context=PostType)": {
+    "lost": "I lost my item",
+    "found": "I found an item"
+  },
+  "create": {
+    "page_title": "Create a Post",
+    "title": "Post Title",
+    "post_type": "Post Type",
+    "item_type": "Item Type",
+    "location_found": "Location of lost item",
+    "location_lost": "Location of found item",
+    "description": "Description",
+    "image": "Upload Image",
+    "image_empty": "No image uploaded.",
+    "submit": "Submit"
   }
 }

@@ -1,6 +1,6 @@
 import 'package:find_it/app/modules/post/data/models/public_user_model.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
-import 'package:find_it/app/modules/post/domain/enums/content_type.dart';
+import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_status.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

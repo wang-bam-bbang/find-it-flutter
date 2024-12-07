@@ -9,5 +9,6 @@ class FindItRouter extends RootStackRouter {
         AutoRoute(path: '/splash', page: SplashRoute.page),
         AutoRoute(path: '/profile', page: ProfileRoute.page),
         AutoRoute(path: '/list', page: ListRoute.page),
+        AutoRoute(path: '/create', page: CreatePostRoute.page),
       ];
 }

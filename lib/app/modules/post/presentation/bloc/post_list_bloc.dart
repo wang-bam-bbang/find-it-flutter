@@ -1,5 +1,5 @@
 import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
-import 'package:find_it/app/modules/post/domain/enums/content_type.dart';
+import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:find_it/app/modules/post/domain/repositories/post_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
