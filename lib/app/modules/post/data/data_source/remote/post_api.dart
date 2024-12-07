@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:find_it/app/modules/post/data/models/my_posts_model.dart';
+import 'package:find_it/app/modules/post/data/models/post_creation_model.dart';
 import 'package:find_it/app/modules/post/data/models/post_list_model.dart';
 import 'package:find_it/app/modules/post/data/models/post_list_query_model.dart';
+import 'package:find_it/app/modules/post/data/models/post_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -18,4 +20,7 @@ abstract class PostApi {
 
   @GET('my-posts')
   Future<MyPostsModel> getMyPosts(@Queries() PostListQueryModel query);
+
+  @POST('')
+  Future<PostModel> createPost(@Body() PostCreationModel post);
 }
