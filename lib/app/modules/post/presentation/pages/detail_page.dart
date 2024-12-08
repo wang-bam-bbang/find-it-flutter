@@ -3,6 +3,7 @@ import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
 @RoutePage()
 class DetailPage extends StatelessWidget {
@@ -75,12 +76,48 @@ class DetailPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                   ),
-                  child: const Center(child: Text('지도 영역')),
+                  child: const Center(
+                    child: DetailMap(),
+                  ),
                 ),
                 const SizedBox(height: 16),
               ],
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class DetailMap extends StatefulWidget {
+  const DetailMap({super.key});
+
+  @override
+  State<DetailMap> createState() => _DetailMapState();
+}
+
+class _DetailMapState extends State<DetailMap> {
+  final _controller = MapController.withUserPosition(
+    trackUserLocation: const UserTrackingOption(
+      enableTracking: true,
+      unFollowUser: false,
+    ),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return OSMFlutter(
+      controller: _controller,
+      osmOption: const OSMOption(
+        zoomOption: ZoomOption(
+          initZoom: 16,
+          minZoomLevel: 10,
         ),
       ),
     );
