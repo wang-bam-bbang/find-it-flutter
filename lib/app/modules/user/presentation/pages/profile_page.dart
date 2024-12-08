@@ -4,15 +4,15 @@ import 'package:auto_route/auto_route.dart';
 import 'package:find_it/app/di/locator.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart' as domain;
 import 'package:find_it/app/modules/post/presentation/bloc/post_list_bloc.dart';
-import 'package:find_it/app/modules/post/presentation/pages/detail_page.dart';
 import 'package:find_it/app/modules/user/domain/entities/user_entity.dart';
 import 'package:find_it/app/modules/user/presentation/bloc/auth_bloc.dart';
 import 'package:find_it/app/modules/user/presentation/bloc/user_bloc.dart';
+import 'package:find_it/app/router.gr.dart';
 import 'package:find_it/app/values/palette.dart';
+import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:find_it/gen/strings.g.dart';
 
 @RoutePage()
 class ProfilePage extends StatefulWidget {
@@ -260,19 +260,7 @@ class _ListView extends StatelessWidget {
                 '${item.location}\n${DateFormat.yMd().format(item.createdAt)}'),
             isThreeLine: true,
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DetailPage(
-                    title: item.title,
-                    author: item.author.name,
-                    itemType: context.t.category(context: item.category),
-                    location: item.location,
-                    content: item.description,
-                    contentType: _type,
-                  ),
-                ),
-              );
+              DetailRoute(post: item).push(context);
             },
           );
         },

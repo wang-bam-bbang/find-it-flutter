@@ -1,22 +1,39 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:find_it/app/di/locator.dart';
+import 'package:find_it/app/modules/post/domain/entities/post_creation_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
-import 'package:find_it/app/modules/post/domain/enums/post_type.dart' as domain;
+import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
+import 'package:find_it/app/modules/post/presentation/bloc/create_post_bloc.dart';
+import 'package:find_it/app/router.gr.dart';
+import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:find_it/gen/strings.g.dart' as strings;
 
 @RoutePage()
-class CreatePostPage extends StatefulWidget {
+class CreatePostPage extends StatelessWidget {
   const CreatePostPage({super.key});
 
   @override
-  CreatePostPageState createState() => CreatePostPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<CreatePostBloc>(),
+      child: const _CreatePostPage(),
+    );
+  }
 }
 
-class CreatePostPageState extends State<CreatePostPage> {
-  domain.PostType? selectedType;
+class _CreatePostPage extends StatefulWidget {
+  const _CreatePostPage();
+
+  @override
+  _CreatePostPageState createState() => _CreatePostPageState();
+}
+
+class _CreatePostPageState extends State<_CreatePostPage> {
+  PostType? selectedType;
   ItemCategory? selectedCategory;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -24,7 +41,7 @@ class CreatePostPageState extends State<CreatePostPage> {
   List<XFile> uploadedImages = [];
 
   final List<ItemCategory> categories = ItemCategory.values;
-  final List<domain.PostType> postTypes = domain.PostType.values;
+  final List<PostType> postTypes = PostType.values;
 
   Future<void> pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -34,6 +51,37 @@ class CreatePostPageState extends State<CreatePostPage> {
         uploadedImages.add(image);
       });
     }
+  }
+
+  Future<void> _create() async {
+    if (selectedType == null) return;
+    if (selectedCategory == null) return;
+    if (titleController.text.isEmpty) return;
+    if (descriptionController.text.isEmpty) return;
+
+    PostCreationEntity(
+      title: titleController.text,
+      type: selectedType!,
+      location: locationController.text,
+      itemType: selectedCategory!,
+      description: descriptionController.text,
+      image: uploadedImages.map((img) => File(img.path)).toList(),
+    );
+
+    final bloc = context.read<CreatePostBloc>();
+    final blocker = bloc.stream.firstWhere((s) => s.isLoaded);
+    bloc.add(CreatePostEvent.create(PostCreationEntity(
+      title: titleController.text,
+      type: selectedType!,
+      location: locationController.text,
+      itemType: selectedCategory!,
+      description: descriptionController.text,
+      image: uploadedImages.map((img) => File(img.path)).toList(),
+    )));
+    await blocker;
+    if (!mounted) return;
+    context.maybePop();
+    DetailRoute(post: bloc.state.post).push(context);
   }
 
   @override
@@ -56,13 +104,13 @@ class CreatePostPageState extends State<CreatePostPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<domain.PostType>(
+              DropdownButtonFormField<PostType>(
                 value: selectedType,
-                items: domain.PostType.values
+                items: PostType.values
                     .map((type) => DropdownMenuItem(
                           value: type,
-                          child: Text(context.t.post_type(
-                              context: strings.PostType.values[type.index])),
+                          child: Text(context.t
+                              .post_type(context: PostType.values[type.index])),
                         ))
                     .toList(),
                 onChanged: (value) {
@@ -83,7 +131,7 @@ class CreatePostPageState extends State<CreatePostPage> {
                         TextField(
                           controller: locationController,
                           decoration: InputDecoration(
-                            labelText: selectedType == domain.PostType.lost
+                            labelText: selectedType == PostType.lost
                                 ? context.t.create.location_found
                                 : context.t.create.location_lost,
                             border: const OutlineInputBorder(),
@@ -141,24 +189,7 @@ class CreatePostPageState extends State<CreatePostPage> {
                   : Text(context.t.create.image_empty),
               const SizedBox(height: 32),
               ElevatedButton(
-                onPressed: () {
-                  final postData = {
-                    "type": selectedType,
-                    "title": titleController.text,
-                    "description": descriptionController.text,
-                    "images": uploadedImages.map((img) => img.path).toList(),
-                    "location": locationController.text,
-                    "category": selectedCategory?.name,
-                  };
-                  if (postData["type"] == null ||
-                      postData["title"] == null ||
-                      postData["location"] == null ||
-                      postData["category"] == null) {
-                    print("Please fill all required fields");
-                  } else {
-                    print(postData);
-                  }
-                },
+                onPressed: _create,
                 child: Text(context.t.create.submit),
               ),
             ],

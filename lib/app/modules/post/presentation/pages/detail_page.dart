@@ -1,23 +1,14 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
+import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
 
+@RoutePage()
 class DetailPage extends StatelessWidget {
-  final String title;
-  final String author;
-  final String itemType;
-  final String location;
-  final String content;
-  final PostType contentType;
+  final PostEntity post;
 
-  const DetailPage({
-    super.key,
-    required this.title,
-    required this.author,
-    required this.itemType,
-    required this.location,
-    required this.content,
-    required this.contentType,
-  });
+  const DetailPage({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
@@ -37,36 +28,36 @@ class DetailPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                post.title,
                 style:
                     const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(
-                '작성자: $author',
+                '작성자: ${post.author.name}',
                 style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
               const SizedBox(height: 8),
               Text(
-                '분실물 종류: $itemType',
+                '분실물 종류: ${context.t.category(context: post.category)}',
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 8),
-              if (contentType == PostType.found) ...[
+              if (post.type == PostType.found) ...[
                 Text(
-                  '발견 위치: $location',
+                  '발견 위치: ${post.location}',
                   style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 16),
               ] else ...[
                 Text(
-                  '예상 분실 위치: $location',
+                  '예상 분실 위치: ${post.location}',
                   style: const TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 16),
               ],
               Text(
-                content,
+                post.description,
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 16),
@@ -77,7 +68,7 @@ class DetailPage extends StatelessWidget {
                 ),
                 child: const Center(child: Text('사진 영역')),
               ),
-              if (contentType == PostType.found) ...[
+              if (post.type == PostType.found) ...[
                 const SizedBox(height: 16),
                 Container(
                   height: 250,
