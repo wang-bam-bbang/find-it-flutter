@@ -1,28 +1,51 @@
 PODS:
+  - Alamofire (5.10.2)
   - Flutter (1.0.0)
+  - flutter_osm_plugin (0.0.1):
+    - Alamofire
+    - Flutter
+    - OSMFlutterFramework
+    - Polyline
+    - Yams
   - flutter_secure_storage (6.0.0):
     - Flutter
   - flutter_web_auth_2 (3.0.0):
     - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
+  - OSMFlutterFramework (0.8.1)
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - permission_handler_apple (9.3.0):
+    - Flutter
+  - Polyline (5.1.0)
   - url_launcher_ios (0.0.1):
     - Flutter
+  - Yams (5.0.6)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_osm_plugin (from `.symlinks/plugins/flutter_osm_plugin/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - flutter_web_auth_2 (from `.symlinks/plugins/flutter_web_auth_2/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - OSMFlutterFramework
+    - Polyline
+    - Yams
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_osm_plugin:
+    :path: ".symlinks/plugins/flutter_osm_plugin/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   flutter_web_auth_2:
@@ -31,17 +54,25 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
+  Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_osm_plugin: 3fb57665b32a81fcffa57c6206658d3a0d0d1a96
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
   flutter_web_auth_2: 5c8d9dcd7848b5a9efb086d24e7a9adcae979c80
   image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
+  OSMFlutterFramework: ed251dbb5af79b383b807ee8e5ab2889d7e484c4
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
+  Polyline: 2a1f29f87f8d9b7de868940f4f76deb8c678a5b1
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
+  Yams: e10dae147f517ed57ecae37c5e8681bdf8fcab65
 
-PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+PODFILE CHECKSUM: a57f30d18f102dd3ce366b1d62a55ecbef2158e5
 
 COCOAPODS: 1.15.2
