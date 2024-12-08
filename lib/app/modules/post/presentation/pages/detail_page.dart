@@ -61,13 +61,14 @@ class DetailPage extends StatelessWidget {
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 16),
-              Container(
-                height: 250,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
+              for (final image in post.images)
+                Container(
+                  height: 250,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: Center(child: Image.network(image)),
                 ),
-                child: const Center(child: Text('사진 영역')),
-              ),
               if (post.type == PostType.found) ...[
                 const SizedBox(height: 16),
                 Container(
