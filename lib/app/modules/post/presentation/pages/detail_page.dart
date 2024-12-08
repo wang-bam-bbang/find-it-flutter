@@ -1,6 +1,10 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:find_it/app/modules/comment/domain/entities/comment_entity.dart';
+import 'package:find_it/app/modules/comment/domain/enums/comment_type.dart';
+import 'package:find_it/app/modules/post/data/models/public_user_model.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
+import 'package:find_it/app/modules/user/domain/entities/public_user_entity.dart';
 import 'package:find_it/app/modules/user/presentation/bloc/user_bloc.dart';
 import 'package:find_it/app/router.gr.dart';
 import 'package:find_it/app/values/palette.dart';
@@ -8,11 +12,31 @@ import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Comment {
-  final String text;
-  final List<Comment> replies;
+class Comment implements CommentEntity {
+  @override
+  final String content;
+  @override
+  final List<Comment> children;
 
-  Comment(this.text, [List<Comment>? replies]) : replies = replies ?? [];
+  Comment(this.content, [this.children = const []]);
+
+  @override
+  PublicUserEntity get author => const PublicUserModel(uuid: '1', name: '이름');
+
+  @override
+  DateTime get createdAt => DateTime.now();
+
+  @override
+  int get id => 1;
+
+  @override
+  bool get isDeleted => false;
+
+  @override
+  int get postId => 1;
+
+  @override
+  CommentType get type => CommentType.comment;
 }
 
 @RoutePage()
@@ -49,9 +73,9 @@ class DetailPageState extends State<DetailPage> {
     if (reply.isNotEmpty) {
       setState(() {
         final comment = _comments[commentIndex];
-        final updatedReplies = List<Comment>.from(comment.replies)
+        final updatedReplies = List<Comment>.from(comment.children)
           ..add(Comment(reply));
-        _comments[commentIndex] = Comment(comment.text, updatedReplies);
+        _comments[commentIndex] = Comment(comment.content, updatedReplies);
       });
       replyController.clear();
     }
@@ -95,20 +119,20 @@ class DetailPageState extends State<DetailPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
+                      Row(
                         children: [
-                          Icon(Icons.account_circle, size: 24),
-                          SizedBox(width: 8),
+                          const Icon(Icons.account_circle, size: 24),
+                          const SizedBox(width: 8),
                           Text(
-                            '작성자 이름',
-                            style:
-                                TextStyle(fontSize: 16, color: Colors.black87),
+                            comment.author.name,
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black87),
                           )
                         ],
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        comment.text,
+                        comment.content,
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.black87,
@@ -143,12 +167,12 @@ class DetailPageState extends State<DetailPage> {
                   ),
                   const SizedBox(height: 8),
                 ],
-                if (comment.replies.isNotEmpty)
+                if (comment.children.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: comment.replies
+                      children: comment.children
                           .asMap()
                           .entries
                           .map((entry) => _buildComment(
