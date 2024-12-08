@@ -18,7 +18,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       emit(CommentState.loaded(comments));
     });
     on<_Create>((event, emit) async {
-      emit(const CommentState.loading());
+      emit(CommentState.loading(state.comments));
       final comment = await _repository.create(
         postId: event.postId,
         text: event.text,
@@ -28,7 +28,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       emit(CommentState.loaded(comments));
     });
     on<_Delete>((event, emit) async {
-      emit(const CommentState.loading());
+      emit(CommentState.loading(state.comments));
       await _repository.delete(event.comment);
       final comments = await _repository.getComments(event.comment.postId);
       emit(CommentState.loaded(comments));
