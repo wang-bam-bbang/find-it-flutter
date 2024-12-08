@@ -332,6 +332,7 @@ class _LayoutState extends State<_Layout> {
                     BlocBuilder<CommentBloc, CommentState>(
                       builder: (context, state) => ListView.builder(
                         shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: state.comments.length,
                         itemBuilder: (context, index) =>
                             _buildComment(state.comments[index], index),
