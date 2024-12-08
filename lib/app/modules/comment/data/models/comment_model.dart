@@ -16,7 +16,7 @@ class CommentModel with _$CommentModel implements CommentEntity {
     required PublicUserModel author,
     required DateTime createdAt,
     required bool isDeleted,
-    required List<CommentModel> children,
+    @Default([]) List<CommentModel> children,
   }) = _CommentModel;
 
   factory CommentModel.fromJson(Map<String, dynamic> json) =>
