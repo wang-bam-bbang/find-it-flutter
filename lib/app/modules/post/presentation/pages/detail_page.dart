@@ -1,10 +1,9 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:find_it/app/di/locator.dart';
 import 'package:find_it/app/modules/comment/domain/entities/comment_entity.dart';
-import 'package:find_it/app/modules/comment/domain/enums/comment_type.dart';
-import 'package:find_it/app/modules/post/data/models/public_user_model.dart';
+import 'package:find_it/app/modules/comment/presentation/bloc/comment_bloc.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
-import 'package:find_it/app/modules/user/domain/entities/public_user_entity.dart';
 import 'package:find_it/app/modules/user/presentation/bloc/user_bloc.dart';
 import 'package:find_it/app/router.gr.dart';
 import 'package:find_it/app/values/palette.dart';
@@ -12,55 +11,42 @@ import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Comment implements CommentEntity {
-  @override
-  final String content;
-  @override
-  final List<Comment> children;
-
-  Comment(this.content, [this.children = const []]);
-
-  @override
-  PublicUserEntity get author => const PublicUserModel(uuid: '1', name: '이름');
-
-  @override
-  DateTime get createdAt => DateTime.now();
-
-  @override
-  int get id => 1;
-
-  @override
-  bool get isDeleted => false;
-
-  @override
-  int get postId => 1;
-
-  @override
-  CommentType get type => CommentType.comment;
-}
-
 @RoutePage()
-class DetailPage extends StatefulWidget {
+class DetailPage extends StatelessWidget {
   final PostEntity post;
 
   const DetailPage({super.key, required this.post});
 
   @override
-  DetailPageState createState() => DetailPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<CommentBloc>()..add(CommentEvent.load(post)),
+      child: _Layout(post: post),
+    );
+  }
 }
 
-class DetailPageState extends State<DetailPage> {
+class _Layout extends StatefulWidget {
+  final PostEntity post;
+
+  const _Layout({required this.post});
+
+  @override
+  _LayoutState createState() => _LayoutState();
+}
+
+class _LayoutState extends State<_Layout> {
   final TextEditingController _commentController = TextEditingController();
   final Map<int, TextEditingController> _replyControllers = {};
-  final List<Comment> _comments = [];
   final Map<int, bool> _showReplyField = {};
 
   void _addComment() {
     final comment = _commentController.text.trim();
     if (comment.isNotEmpty) {
-      setState(() {
-        _comments.add(Comment(comment));
-      });
+      context.read<CommentBloc>().add(CommentEvent.create(
+            postId: widget.post.id,
+            text: comment,
+          ));
       _commentController.clear();
     }
   }
@@ -71,17 +57,17 @@ class DetailPageState extends State<DetailPage> {
 
     final reply = replyController.text.trim();
     if (reply.isNotEmpty) {
-      setState(() {
-        final comment = _comments[commentIndex];
-        final updatedReplies = List<Comment>.from(comment.children)
-          ..add(Comment(reply));
-        _comments[commentIndex] = Comment(comment.content, updatedReplies);
-      });
+      final bloc = context.read<CommentBloc>();
+      bloc.add(CommentEvent.create(
+        postId: widget.post.id,
+        text: reply,
+        parentId: bloc.state.comments[commentIndex].id,
+      ));
       replyController.clear();
     }
   }
 
-  Widget _buildComment(Comment comment, int commentIndex,
+  Widget _buildComment(CommentEntity comment, int commentIndex,
       {bool isReply = false}) {
     return Container(
       width: double.infinity,
@@ -343,8 +329,14 @@ class DetailPageState extends State<DetailPage> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    for (final entry in _comments.asMap().entries)
-                      _buildComment(entry.value, entry.key),
+                    BlocBuilder<CommentBloc, CommentState>(
+                      builder: (context, state) => ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.comments.length,
+                        itemBuilder: (context, index) =>
+                            _buildComment(state.comments[index], index),
+                      ),
+                    ),
                     const SizedBox(height: 16),
                     if (authenticated) ...[
                       Row(
