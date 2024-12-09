@@ -115,7 +115,7 @@ class _ListPageState extends State<ListPage> {
                     if (!authenticated) {
                       const ProfileRoute().push(context);
                     } else {
-                      const CreatePostRoute().push(context);
+                      CreatePostRoute().push(context);
                     }
                   },
                 ),

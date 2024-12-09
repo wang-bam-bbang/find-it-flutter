@@ -28,6 +28,7 @@
   },
   "create": {
     "page_title": "Create a Post",
+    "page_title_modify": "Modify Post",
     "title": "Post Title",
     "post_type": "Post Type",
     "item_type": "Item Type",
@@ -36,6 +37,7 @@
     "description": "Description",
     "image": "Upload Image",
     "image_empty": "No image uploaded.",
-    "submit": "Submit"
+    "submit": "Submit",
+    "modify": "Modify"
   }
 }

@@ -4,6 +4,7 @@ import 'package:find_it/app/modules/post/data/models/post_creation_model.dart';
 import 'package:find_it/app/modules/post/data/models/post_list_model.dart';
 import 'package:find_it/app/modules/post/data/models/post_list_query_model.dart';
 import 'package:find_it/app/modules/post/data/models/post_model.dart';
+import 'package:find_it/app/modules/post/data/models/post_modification_model.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -23,4 +24,8 @@ abstract class PostApi {
 
   @POST('')
   Future<PostModel> createPost(@Body() PostCreationModel post);
+
+  @PATCH('{id}')
+  Future<PostModel> modifyPost(
+      @Path('id') int id, @Body() PostModificationModel post);
 }

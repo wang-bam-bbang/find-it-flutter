@@ -232,6 +232,16 @@ class _LayoutState extends State<_Layout> {
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
+              actions: [
+                if (state.user != null &&
+                    state.user!.uuid == widget.post.author.uuid)
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      CreatePostRoute(post: widget.post).push(context);
+                    },
+                  ),
+              ],
               title: const Text('분실물 상세 정보'),
               backgroundColor: Colors.white,
               elevation: 0,
