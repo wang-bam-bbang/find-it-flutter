@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:find_it/app/di/locator.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_creation_entity.dart';
+import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
+import 'package:find_it/app/modules/post/domain/entities/post_modification_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:find_it/app/modules/post/presentation/bloc/create_post_bloc.dart';
@@ -14,19 +16,23 @@ import 'package:image_picker/image_picker.dart';
 
 @RoutePage()
 class CreatePostPage extends StatelessWidget {
-  const CreatePostPage({super.key});
+  const CreatePostPage({super.key, this.post});
+
+  final PostEntity? post;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<CreatePostBloc>(),
-      child: const _CreatePostPage(),
+      child: _CreatePostPage(post),
     );
   }
 }
 
 class _CreatePostPage extends StatefulWidget {
-  const _CreatePostPage();
+  final PostEntity? post;
+
+  const _CreatePostPage(this.post);
 
   @override
   _CreatePostPageState createState() => _CreatePostPageState();
@@ -42,6 +48,20 @@ class _CreatePostPageState extends State<_CreatePostPage> {
 
   final List<ItemCategory> categories = ItemCategory.values;
   final List<PostType> postTypes = PostType.values;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.post != null) {
+      final post = widget.post!;
+      selectedType = post.type;
+      selectedCategory = post.category;
+      titleController.text = post.title;
+      descriptionController.text = post.description;
+      locationController.text = post.location;
+    }
+  }
 
   Future<void> pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -59,15 +79,6 @@ class _CreatePostPageState extends State<_CreatePostPage> {
     if (titleController.text.isEmpty) return;
     if (descriptionController.text.isEmpty) return;
 
-    PostCreationEntity(
-      title: titleController.text,
-      type: selectedType!,
-      location: locationController.text,
-      itemType: selectedCategory!,
-      description: descriptionController.text,
-      image: uploadedImages.map((img) => File(img.path)).toList(),
-    );
-
     final bloc = context.read<CreatePostBloc>();
     final blocker = bloc.stream.firstWhere((s) => s.isLoaded);
     bloc.add(CreatePostEvent.create(PostCreationEntity(
@@ -84,15 +95,41 @@ class _CreatePostPageState extends State<_CreatePostPage> {
     DetailRoute(post: bloc.state.post).push(context);
   }
 
+  Future<void> _modify() async {
+    if (selectedType == null) return;
+    if (selectedCategory == null) return;
+    if (titleController.text.isEmpty) return;
+    if (descriptionController.text.isEmpty) return;
+
+    final bloc = context.read<CreatePostBloc>();
+    final blocker = bloc.stream.firstWhere((s) => s.isLoaded);
+    bloc.add(CreatePostEvent.modify(
+        widget.post!.id,
+        PostModificationEntity(
+          title: titleController.text,
+          type: selectedType!,
+          location: locationController.text,
+          itemType: selectedCategory!,
+          description: descriptionController.text,
+        )));
+    await blocker;
+    if (!mounted) return;
+    context.maybePop();
+    context.router.popForced();
+    DetailRoute(post: bloc.state.post).push(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.t.create.page_title),
+        title: widget.post == null
+            ? Text(context.t.create.page_title)
+            : Text(context.t.create.page_title_modify),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -132,8 +169,8 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                           controller: locationController,
                           decoration: InputDecoration(
                             labelText: selectedType == PostType.lost
-                                ? context.t.create.location_found
-                                : context.t.create.location_lost,
+                                ? context.t.create.location_lost
+                                : context.t.create.location_found,
                             border: const OutlineInputBorder(),
                           ),
                         ),
@@ -168,29 +205,42 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: pickImage,
-                child: Text(context.t.create.image),
-              ),
-              const SizedBox(height: 16),
-              uploadedImages.isNotEmpty
-                  ? Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: uploadedImages
-                          .map((image) => Image.file(
-                                File(image.path),
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              ))
-                          .toList(),
-                    )
-                  : Text(context.t.create.image_empty),
+              if (widget.post != null) ...[
+                for (final image in widget.post!.images)
+                  Container(
+                    height: 250,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: Center(child: Image.network(image)),
+                  ),
+              ] else ...[
+                ElevatedButton(
+                  onPressed: pickImage,
+                  child: Text(context.t.create.image),
+                ),
+                const SizedBox(height: 16),
+                uploadedImages.isNotEmpty
+                    ? Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: uploadedImages
+                            .map((image) => Image.file(
+                                  File(image.path),
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                ))
+                            .toList(),
+                      )
+                    : Text(context.t.create.image_empty),
+              ],
               const SizedBox(height: 32),
               ElevatedButton(
-                onPressed: _create,
-                child: Text(context.t.create.submit),
+                onPressed: widget.post == null ? _create : _modify,
+                child: widget.post == null
+                    ? Text(context.t.create.submit)
+                    : Text(context.t.create.modify),
               ),
             ],
           ),
