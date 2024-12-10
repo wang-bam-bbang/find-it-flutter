@@ -45,6 +45,7 @@
     "location_found": "Location of lost item",
     "location_lost": "Location of found item",
     "description": "Description",
+    "status": "Status",
     "image": "Upload Image",
     "image_empty": "No image uploaded.",
     "submit": "Submit",

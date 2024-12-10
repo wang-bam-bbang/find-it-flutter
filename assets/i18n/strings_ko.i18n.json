@@ -45,6 +45,7 @@
     "location_found": "분실물 발견 위치",
     "location_lost": "분실 예상 위치",
     "description": "설명",
+    "status": "상태",
     "image": "이미지 업로드",
     "image_empty": "이미지가 없습니다.",
     "submit": "작성하기",

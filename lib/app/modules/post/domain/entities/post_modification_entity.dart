@@ -1,5 +1,6 @@
 import 'package:find_it/app/modules/building/domain/entities/building_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
+import 'package:find_it/app/modules/post/domain/enums/post_status.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 
 class PostModificationEntity {
@@ -9,6 +10,7 @@ class PostModificationEntity {
   final String locationDetail;
   final ItemCategory itemType;
   final String description;
+  final PostStatus status;
 
   PostModificationEntity({
     required this.title,
@@ -17,5 +19,6 @@ class PostModificationEntity {
     required this.locationDetail,
     required this.itemType,
     required this.description,
+    required this.status,
   });
 }
