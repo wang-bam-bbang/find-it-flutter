@@ -23,13 +23,15 @@ class RestPostRepository implements PostRepository {
       {required PostType type, ItemCategory? category}) async {
     final result =
         await _api.getPosts(PostListQueryModel(type: type, category: category));
-    return result.list;
+    return result.list.sublist(0)
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
   @override
   Future<List<PostEntity>> getMyPosts({required PostType type}) async {
     final result = await _api.getMyPosts(PostListQueryModel(type: type));
-    return result.list;
+    return result.list.sublist(0)
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
   @override
