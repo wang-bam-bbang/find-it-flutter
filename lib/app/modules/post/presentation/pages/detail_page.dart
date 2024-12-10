@@ -296,6 +296,11 @@ class _LayoutState extends State<_Layout> {
                     ),
                     const SizedBox(height: 8),
                     Text(
+                      '상태: ${widget.post.type == PostType.found ? context.t.lost_status(context: widget.post.status) : context.t.found_status(context: widget.post.status)}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
                       '분실물 종류: ${context.t.category(context: widget.post.category)}',
                       style: const TextStyle(fontSize: 16),
                     ),
