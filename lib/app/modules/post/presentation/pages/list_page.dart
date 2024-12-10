@@ -134,6 +134,7 @@ class _ListPageState extends State<ListPage> {
             ),
             body: _buildBody(),
             bottomNavigationBar: BottomNavigationBar(
+              backgroundColor: Colors.white,
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
               items: const [
@@ -223,10 +224,6 @@ class SectionTitle extends StatelessWidget {
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
-        ),
-        TextButton(
-          onPressed: () {},
-          child: const Text('더보기 >'),
         ),
       ],
     );

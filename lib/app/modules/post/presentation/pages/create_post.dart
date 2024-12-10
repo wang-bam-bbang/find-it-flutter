@@ -136,7 +136,9 @@ class _CreatePostPageState extends State<_CreatePostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: widget.post == null
             ? Text(context.t.create.page_title)
             : Text(context.t.create.page_title_modify),
@@ -151,7 +153,8 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                 controller: titleController,
                 decoration: InputDecoration(
                   labelText: context.t.create.title,
-                  border: const OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8)),
                 ),
               ),
               const SizedBox(height: 16),
@@ -171,7 +174,8 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                 },
                 decoration: InputDecoration(
                   labelText: context.t.create.post_type,
-                  border: const OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8)),
                 ),
               ),
               const SizedBox(height: 16),
@@ -195,7 +199,8 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                               labelText: selectedType == PostType.lost
                                   ? context.t.create.location_lost
                                   : context.t.create.location_found,
-                              border: const OutlineInputBorder(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8)),
                             ),
                           );
                         }),
@@ -206,7 +211,8 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                             labelText: selectedType == PostType.lost
                                 ? context.t.create.location_lost
                                 : context.t.create.location_found,
-                            border: const OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8)),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -227,7 +233,8 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                 },
                 decoration: InputDecoration(
                   labelText: context.t.create.item_type,
-                  border: const OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8)),
                 ),
               ),
               const SizedBox(height: 16),
@@ -236,7 +243,8 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                 maxLines: 5,
                 decoration: InputDecoration(
                   labelText: context.t.create.description,
-                  border: const OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8)),
                 ),
               ),
               const SizedBox(height: 16),
