@@ -10,7 +10,7 @@ part 'post_creation_model.g.dart';
 class PostCreationModel with _$PostCreationModel {
   const factory PostCreationModel({
     required String title,
-    required String location,
+    required int buildingId,
     required String description,
     required PostType type,
     required ItemCategory category,
@@ -23,7 +23,7 @@ class PostCreationModel with _$PostCreationModel {
           {required PostCreationEntity entity, required List<String> images}) =>
       PostCreationModel(
         title: entity.title,
-        location: entity.location,
+        buildingId: entity.building.id,
         description: entity.description,
         type: entity.type,
         category: entity.itemType,

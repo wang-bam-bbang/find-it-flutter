@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:find_it/app/di/locator.dart';
+import 'package:find_it/app/modules/building/domain/entities/building_entity.dart';
 import 'package:find_it/app/modules/comment/domain/entities/comment_entity.dart';
 import 'package:find_it/app/modules/comment/presentation/bloc/comment_bloc.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
@@ -272,13 +273,13 @@ class _LayoutState extends State<_Layout> {
                     const SizedBox(height: 8),
                     if (widget.post.type == PostType.found) ...[
                       Text(
-                        '발견 위치: ${widget.post.location}',
+                        '발견 위치: ${widget.post.building.displayName}',
                         style: const TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 16),
                     ] else ...[
                       Text(
-                        '예상 분실 위치: ${widget.post.location}',
+                        '예상 분실 위치: ${widget.post.building.displayName}',
                         style: const TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 16),
