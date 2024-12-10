@@ -33,7 +33,6 @@ class _Layout extends StatefulWidget {
 }
 
 class _LayoutState extends State<_Layout> {
-  int _selectedIndex = 1;
   domain.PostType _currentContent = domain.PostType.found;
   ItemCategory? _selectedCategory;
 
@@ -43,12 +42,6 @@ class _LayoutState extends State<_Layout> {
     context
         .read<PostListBloc>()
         .add(PostListEvent.fetch(_currentContent, category: _selectedCategory));
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 
   void _showFilterModal() {
@@ -130,119 +123,124 @@ class _LayoutState extends State<_Layout> {
   }
 
   Widget _buildBody() {
-    if (_selectedIndex == 0) {
-      return const Center(child: Text('지도 페이지'));
-    } else if (_selectedIndex == 1) {
-      return Column(
-        children: [
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _currentContent = domain.PostType.found;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _currentContent == domain.PostType.found
-                          ? Colors.blue
-                          : Colors.grey[200],
-                      foregroundColor: _currentContent == domain.PostType.found
-                          ? Colors.white
-                          : Colors.black,
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentContent = domain.PostType.found;
+                      context.read<PostListBloc>().add(
+                            PostListEvent.fetch(_currentContent,
+                                category: _selectedCategory),
+                          );
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _currentContent == domain.PostType.found
+                        ? Colors.blue
+                        : Colors.grey[200],
+                    foregroundColor: _currentContent == domain.PostType.found
+                        ? Colors.white
+                        : Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text(context.t.list.found.label),
                   ),
+                  child: Text(context.t.list.found.label),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _currentContent = domain.PostType.lost;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _currentContent == domain.PostType.lost
-                          ? Colors.blue
-                          : Colors.grey[200],
-                      foregroundColor: _currentContent == domain.PostType.lost
-                          ? Colors.white
-                          : Colors.black,
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentContent = domain.PostType.lost;
+                      context.read<PostListBloc>().add(
+                            PostListEvent.fetch(_currentContent,
+                                category: _selectedCategory),
+                          );
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _currentContent == domain.PostType.lost
+                        ? Colors.blue
+                        : Colors.grey[200],
+                    foregroundColor: _currentContent == domain.PostType.lost
+                        ? Colors.white
+                        : Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text(context.t.list.lost.label),
                   ),
+                  child: Text(context.t.list.lost.label),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          _ListView(
-            type: _currentContent,
-            category: _selectedCategory,
-            key: Key(_currentContent.name),
-          ),
-        ],
-      );
-    } else {
-      return const Center(child: Text('페이지 없음'));
-    }
+        ),
+        _ListView(
+          type: _currentContent,
+          category: _selectedCategory,
+          key: Key(_currentContent.name),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(
-        buildWhen: (_, c) => c.mapOrNull(done: (v) => true) ?? false,
-        builder: (context, state) {
-          final authenticated = state.user != null;
-          return Scaffold(
+      buildWhen: (_, c) => c.mapOrNull(done: (v) => true) ?? false,
+      builder: (context, state) {
+        final authenticated = state.user != null;
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            elevation: 0,
+            surfaceTintColor: Colors.transparent,
             backgroundColor: Colors.white,
-            appBar: AppBar(
-              elevation: 0,
-              surfaceTintColor: Colors.transparent,
-              backgroundColor: Colors.white,
-              title: const Text('Find-it'),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.create),
-                  onPressed: () {
-                    if (!authenticated) {
-                      const ProfileRoute().push(context);
-                    } else {
-                      CreatePostRoute().push(context);
-                    }
-                  },
+            title: const Text('Find-it'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.create),
+                onPressed: () {
+                  if (!authenticated) {
+                    const ProfileRoute().push(context);
+                  } else {
+                    CreatePostRoute().push(context);
+                  }
+                },
+              ),
+              IconButton(
+                icon: Badge(
+                  isLabelVisible: _selectedCategory != null,
+                  child: const Icon(Icons.filter_list),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.filter_list),
-                  onPressed: _showFilterModal,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.person),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ProfilePage()),
-                    );
-                  },
-                ),
-              ],
-            ),
-            body: _buildBody(),
-          );
-        });
+                onPressed: _showFilterModal,
+              ),
+              IconButton(
+                icon: const Icon(Icons.person),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ProfilePage()),
+                  );
+                },
+              ),
+            ],
+          ),
+          body: _buildBody(),
+        );
+      },
+    );
   }
 }
 

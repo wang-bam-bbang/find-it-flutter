@@ -15,15 +15,15 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
   PostListBloc(this._repository) : super(const _Initial()) {
     on<_Fetch>((event, emit) async {
       emit(const _Loading());
-      // try {
-      final posts = await _repository.getPosts(
-        type: event.type,
-        category: event.category,
-      );
-      emit(_Loaded(posts));
-      // } catch (e) {
-      // emit(_Error([], e.toString()));
-      // }
+      try {
+        final posts = await _repository.getPosts(
+          type: event.type,
+          category: event.category,
+        );
+        emit(_Loaded(posts));
+      } catch (e) {
+        emit(_Error([], e.toString()));
+      }
     });
 
     on<_FetchMyPost>((event, emit) async {
