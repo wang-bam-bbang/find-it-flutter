@@ -69,8 +69,11 @@ class _LayoutState extends State<_Layout> {
     }
   }
 
-  Widget _buildComment(CommentEntity comment, int commentIndex,
-      {bool isReply = false}) {
+  Widget _buildComment(
+    CommentEntity comment,
+    int commentIndex, {
+    bool isReply = false,
+  }) {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(bottom: 4, left: isReply ? 12 : 0),
@@ -111,11 +114,22 @@ class _LayoutState extends State<_Layout> {
                         children: [
                           const Icon(Icons.account_circle, size: 24),
                           const SizedBox(width: 8),
-                          Text(
-                            comment.author.name,
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.black87),
-                          )
+                          Expanded(
+                            child: Text(
+                              comment.author.name,
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.black87),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          if (UserBloc.userOrNull(context)?.uuid ==
+                              comment.author.uuid)
+                            IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () => context
+                                  .read<CommentBloc>()
+                                  .add(CommentEvent.delete(comment)),
+                            ),
                         ],
                       ),
                       const SizedBox(height: 4),

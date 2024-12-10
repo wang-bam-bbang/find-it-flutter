@@ -17,4 +17,7 @@ abstract class CommentApi {
 
   @POST('')
   Future<CommentModel> createComment(@Body() CommentCreationModel data);
+
+  @DELETE('{id}')
+  Future<void> deleteComment(@Path('id') int id);
 }
