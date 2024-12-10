@@ -297,7 +297,8 @@ class _LayoutState extends State<_Layout> {
                         ),
                         child: Center(child: Image.network(image)),
                       ),
-                    if (widget.post.type == PostType.found) ...[
+                    if (widget.post.type == PostType.found &&
+                        widget.post.building.point != null) ...[
                       const SizedBox(height: 16),
                       Container(
                         height: 250,
@@ -306,10 +307,7 @@ class _LayoutState extends State<_Layout> {
                         ),
                         child: Center(
                           child: DetailMap(
-                            point: GeoPoint.fromString(RegExp(r'(\d+\.?\d+)')
-                                .allMatches(widget.post.building.gps)
-                                .map((i) => i.group(1))
-                                .join(',')),
+                            point: widget.post.building.point!,
                           ),
                         ),
                       ),
