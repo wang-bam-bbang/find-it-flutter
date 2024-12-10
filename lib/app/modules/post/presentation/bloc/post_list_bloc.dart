@@ -1,4 +1,5 @@
 import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
+import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:find_it/app/modules/post/domain/repositories/post_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,12 +15,15 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
   PostListBloc(this._repository) : super(const _Initial()) {
     on<_Fetch>((event, emit) async {
       emit(const _Loading());
-      try {
-        final posts = await _repository.getPosts(type: event.type);
-        emit(_Loaded(posts));
-      } catch (e) {
-        emit(_Error([], e.toString()));
-      }
+      // try {
+      final posts = await _repository.getPosts(
+        type: event.type,
+        category: event.category,
+      );
+      emit(_Loaded(posts));
+      // } catch (e) {
+      // emit(_Error([], e.toString()));
+      // }
     });
 
     on<_FetchMyPost>((event, emit) async {
@@ -36,7 +40,8 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
 
 @freezed
 class PostListEvent with _$PostListEvent {
-  const factory PostListEvent.fetch(PostType type) = _Fetch;
+  const factory PostListEvent.fetch(PostType type, {ItemCategory? category}) =
+      _Fetch;
   const factory PostListEvent.fetchMyPost(PostType type) = _FetchMyPost;
 }
 

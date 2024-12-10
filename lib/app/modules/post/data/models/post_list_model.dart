@@ -9,7 +9,7 @@ class PostListModel with _$PostListModel {
   const factory PostListModel({
     required int total,
     required List<PostModel> list,
-    required int nextCursor,
+    int? nextCursor,
   }) = _PostListModel;
 
   factory PostListModel.fromJson(Map<String, dynamic> json) =>
