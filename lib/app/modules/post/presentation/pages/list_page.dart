@@ -26,7 +26,7 @@ class ListPage extends StatelessWidget {
 }
 
 class _Layout extends StatefulWidget {
-  const _Layout({super.key});
+  const _Layout();
 
   @override
   State<_Layout> createState() => _LayoutState();
@@ -35,7 +35,6 @@ class _Layout extends StatefulWidget {
 class _LayoutState extends State<_Layout> {
   int _selectedIndex = 1;
   domain.PostType _currentContent = domain.PostType.found;
-
   ItemCategory? _selectedCategory;
 
   @override
@@ -57,7 +56,7 @@ class _LayoutState extends State<_Layout> {
 
     showModalBottomSheet(
       context: context,
-      builder: (bbcontext) {
+      builder: (sheetContext) {
         const categories = ItemCategory.values;
 
         return StatefulBuilder(
@@ -111,7 +110,7 @@ class _LayoutState extends State<_Layout> {
                           setState(() {
                             _selectedCategory = tempCategory;
                           });
-                          Navigator.pop(bbcontext);
+                          Navigator.pop(sheetContext);
                           context.read<PostListBloc>().add(PostListEvent.fetch(
                                 domain.PostType.found,
                                 category: tempCategory,
@@ -204,56 +203,46 @@ class _LayoutState extends State<_Layout> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(
-      buildWhen: (_, c) => c.mapOrNull(done: (v) => true) ?? false,
-      builder: (context, state) {
-        final authenticated = state.user != null;
-        return Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            elevation: 0,
-            surfaceTintColor: Colors.transparent,
+        buildWhen: (_, c) => c.mapOrNull(done: (v) => true) ?? false,
+        builder: (context, state) {
+          final authenticated = state.user != null;
+          return Scaffold(
             backgroundColor: Colors.white,
-            title: const Text('Find-it'),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.create),
-                onPressed: () {
-                  if (!authenticated) {
-                    const ProfileRoute().push(context);
-                  } else {
-                    CreatePostRoute().push(context);
-                  }
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.filter_list),
-                onPressed: _showFilterModal,
-              ),
-              IconButton(
-                icon: const Icon(Icons.person),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ProfilePage()),
-                  );
-                },
-              ),
-            ],
-          ),
-          body: _buildBody(),
-          bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: Colors.white,
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.map), label: '지도'),
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: '메인'),
-            ],
-          ),
-        );
-      },
-    );
+            appBar: AppBar(
+              elevation: 0,
+              surfaceTintColor: Colors.transparent,
+              backgroundColor: Colors.white,
+              title: const Text('Find-it'),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.create),
+                  onPressed: () {
+                    if (!authenticated) {
+                      const ProfileRoute().push(context);
+                    } else {
+                      CreatePostRoute().push(context);
+                    }
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.filter_list),
+                  onPressed: _showFilterModal,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.person),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ProfilePage()),
+                    );
+                  },
+                ),
+              ],
+            ),
+            body: _buildBody(),
+          );
+        });
   }
 }
 
