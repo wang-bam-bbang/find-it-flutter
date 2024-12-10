@@ -26,6 +26,16 @@
     "lost": "분실물을 찾아요",
     "found": "분실물을 발견했어요"
   },
+  "lost_status(context=PostStatus)": {
+    "cancelled": "취소했어요",
+    "inProgress": "물건을 찾는 중이에요",
+    "resolved": "물건을 찾았어요"
+  },
+  "found_status(context=PostStatus)": {
+    "cancelled": "취소했어요",
+    "inProgress": "주인을 찾는 중이에요",
+    "resolved": "주인을 찾았어요"
+  },
   "create": {
     "page_title": "게시글 작성",
     "page_title_modify": "게시글 수정",

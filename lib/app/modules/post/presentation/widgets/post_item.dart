@@ -1,6 +1,8 @@
 import 'package:find_it/app/modules/building/domain/entities/building_entity.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
+import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:find_it/app/router.gr.dart';
+import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -26,6 +28,16 @@ class PostItem extends StatelessWidget {
       onTap: () {
         DetailRoute(post: item).push(context);
       },
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            item.type == PostType.found
+                ? context.t.lost_status(context: item.status)
+                : context.t.found_status(context: item.status),
+          ),
+        ],
+      ),
     );
   }
 }
