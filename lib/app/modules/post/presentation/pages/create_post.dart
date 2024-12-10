@@ -272,11 +272,30 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                     : Text(context.t.create.image_empty),
               ],
               const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: widget.post == null ? _create : _modify,
-                child: widget.post == null
-                    ? Text(context.t.create.submit)
-                    : Text(context.t.create.modify),
+              BlocBuilder<CreatePostBloc, CreatePostState>(
+                builder: (context, state) => Stack(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(56),
+                      ),
+                      onPressed: state.isLoading
+                          ? null
+                          : widget.post == null
+                              ? _create
+                              : _modify,
+                      child: widget.post == null
+                          ? Text(context.t.create.submit)
+                          : Text(context.t.create.modify),
+                    ),
+                    if (state.isLoading)
+                      const Positioned.fill(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ],
           ),
