@@ -2,18 +2,16 @@ import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:find_it/app/di/locator.dart';
-import 'package:find_it/app/modules/building/domain/entities/building_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart' as domain;
 import 'package:find_it/app/modules/post/presentation/bloc/post_list_bloc.dart';
+import 'package:find_it/app/modules/post/presentation/widgets/post_item.dart';
 import 'package:find_it/app/modules/user/domain/entities/user_entity.dart';
 import 'package:find_it/app/modules/user/presentation/bloc/auth_bloc.dart';
 import 'package:find_it/app/modules/user/presentation/bloc/user_bloc.dart';
-import 'package:find_it/app/router.gr.dart';
 import 'package:find_it/app/values/palette.dart';
 import 'package:find_it/gen/strings.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 @RoutePage()
 class ProfilePage extends StatefulWidget {
@@ -245,26 +243,7 @@ class _ListView extends StatelessWidget {
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         itemCount: state.list.length,
-        itemBuilder: (context, index) {
-          final item = state.list[index];
-
-          return ListTile(
-            contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            title: Text(
-              item.title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(
-                '${item.building.displayName}\n${DateFormat.yMd().format(item.createdAt)}'),
-            isThreeLine: true,
-            onTap: () {
-              DetailRoute(post: item).push(context);
-            },
-          );
-        },
+        itemBuilder: (context, index) => PostItem(item: state.list[index]),
       ),
     );
   }

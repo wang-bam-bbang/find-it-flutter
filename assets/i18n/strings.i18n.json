@@ -26,6 +26,16 @@
     "lost": "I lost my item",
     "found": "I found an item"
   },
+  "lost_status(context=PostStatus)": {
+    "cancelled": "Cancelled",
+    "inProgress": "In progress",
+    "resolved": "Resolved"
+  },
+  "found_status(context=PostStatus)": {
+    "cancelled": "Cancelled",
+    "inProgress": "In progress",
+    "resolved": "Resolved"
+  },
   "create": {
     "page_title": "Create a Post",
     "page_title_modify": "Modify Post",
@@ -35,6 +45,7 @@
     "location_found": "Location of lost item",
     "location_lost": "Location of found item",
     "description": "Description",
+    "status": "Status",
     "image": "Upload Image",
     "image_empty": "No image uploaded.",
     "submit": "Submit",

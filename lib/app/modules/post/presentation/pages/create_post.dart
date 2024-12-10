@@ -8,6 +8,7 @@ import 'package:find_it/app/modules/post/domain/entities/post_creation_entity.da
 import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_modification_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
+import 'package:find_it/app/modules/post/domain/enums/post_status.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:find_it/app/modules/post/presentation/bloc/create_post_bloc.dart';
 import 'package:find_it/app/router.gr.dart';
@@ -48,6 +49,7 @@ class _CreatePostPage extends StatefulWidget {
 class _CreatePostPageState extends State<_CreatePostPage> {
   PostType? selectedType;
   ItemCategory? selectedCategory;
+  PostStatus? selectedStatus;
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
   final locationDetailController = TextEditingController();
@@ -69,6 +71,7 @@ class _CreatePostPageState extends State<_CreatePostPage> {
       descriptionController.text = post.description;
       selectedBuilding = post.building;
       locationDetailController.text = post.locationDetail;
+      selectedStatus = post.status;
     }
   }
 
@@ -114,6 +117,7 @@ class _CreatePostPageState extends State<_CreatePostPage> {
     if (descriptionController.text.isEmpty) return;
     if (selectedBuilding == null) return;
     if (locationDetailController.text.isEmpty) return;
+    if (selectedStatus == null) return;
 
     final bloc = context.read<CreatePostBloc>();
     final blocker = bloc.stream.firstWhere((s) => s.isLoaded);
@@ -126,6 +130,7 @@ class _CreatePostPageState extends State<_CreatePostPage> {
           locationDetail: locationDetailController.text,
           itemType: selectedCategory!,
           description: descriptionController.text,
+          status: selectedStatus!,
         )));
     await blocker;
     if (!mounted) return;
@@ -247,6 +252,32 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                       borderRadius: BorderRadius.circular(8)),
                 ),
               ),
+              if (widget.post != null) ...[
+                const SizedBox(height: 16),
+                DropdownButtonFormField<PostStatus>(
+                  value: widget.post!.status,
+                  items: PostStatus.values
+                      .map((status) => DropdownMenuItem(
+                            value: status,
+                            child: Text(
+                              widget.post!.type == PostType.lost
+                                  ? context.t.lost_status(context: status)
+                                  : context.t.found_status(context: status),
+                            ),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedStatus = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    labelText: context.t.create.status,
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+              ],
               const SizedBox(height: 16),
               if (widget.post != null) ...[
                 for (final image in widget.post!.images)
