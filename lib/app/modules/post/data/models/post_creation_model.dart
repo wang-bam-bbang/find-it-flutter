@@ -11,6 +11,7 @@ class PostCreationModel with _$PostCreationModel {
   const factory PostCreationModel({
     required String title,
     required int buildingId,
+    required String locationDetail,
     required String description,
     required PostType type,
     required ItemCategory category,
@@ -24,6 +25,7 @@ class PostCreationModel with _$PostCreationModel {
       PostCreationModel(
         title: entity.title,
         buildingId: entity.building.id,
+        locationDetail: entity.locationDetail,
         description: entity.description,
         type: entity.type,
         category: entity.itemType,

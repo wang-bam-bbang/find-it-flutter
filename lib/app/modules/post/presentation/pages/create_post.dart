@@ -48,8 +48,9 @@ class _CreatePostPage extends StatefulWidget {
 class _CreatePostPageState extends State<_CreatePostPage> {
   PostType? selectedType;
   ItemCategory? selectedCategory;
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final locationDetailController = TextEditingController();
   List<XFile> uploadedImages = [];
 
   final List<ItemCategory> categories = ItemCategory.values;
@@ -67,6 +68,7 @@ class _CreatePostPageState extends State<_CreatePostPage> {
       titleController.text = post.title;
       descriptionController.text = post.description;
       selectedBuilding = post.building;
+      locationDetailController.text = post.locationDetail;
     }
   }
 
@@ -86,6 +88,7 @@ class _CreatePostPageState extends State<_CreatePostPage> {
     if (titleController.text.isEmpty) return;
     if (descriptionController.text.isEmpty) return;
     if (selectedBuilding == null) return;
+    if (locationDetailController.text.isEmpty) return;
 
     final bloc = context.read<CreatePostBloc>();
     final blocker = bloc.stream.firstWhere((s) => s.isLoaded);
@@ -93,6 +96,7 @@ class _CreatePostPageState extends State<_CreatePostPage> {
       title: titleController.text,
       type: selectedType!,
       building: selectedBuilding!,
+      locationDetail: locationDetailController.text,
       itemType: selectedCategory!,
       description: descriptionController.text,
       image: uploadedImages.map((img) => File(img.path)).toList(),
@@ -109,6 +113,7 @@ class _CreatePostPageState extends State<_CreatePostPage> {
     if (titleController.text.isEmpty) return;
     if (descriptionController.text.isEmpty) return;
     if (selectedBuilding == null) return;
+    if (locationDetailController.text.isEmpty) return;
 
     final bloc = context.read<CreatePostBloc>();
     final blocker = bloc.stream.firstWhere((s) => s.isLoaded);
@@ -118,6 +123,7 @@ class _CreatePostPageState extends State<_CreatePostPage> {
           title: titleController.text,
           type: selectedType!,
           building: selectedBuilding!,
+          locationDetail: locationDetailController.text,
           itemType: selectedCategory!,
           description: descriptionController.text,
         )));
@@ -174,15 +180,15 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                   ? const SizedBox()
                   : Column(
                       children: [
-                        // TextField(
-                        //   controller: locationController,
-                        //   decoration: InputDecoration(
-                        //     labelText: selectedType == PostType.lost
-                        //         ? context.t.create.location_lost
-                        //         : context.t.create.location_found,
-                        //     border: const OutlineInputBorder(),
-                        //   ),
-                        // ),
+                        TextField(
+                          controller: locationDetailController,
+                          decoration: InputDecoration(
+                            labelText: selectedType == PostType.lost
+                                ? context.t.create.location_lost
+                                : context.t.create.location_found,
+                            border: const OutlineInputBorder(),
+                          ),
+                        ),
                         const SizedBox(height: 16),
                       ],
                     ),

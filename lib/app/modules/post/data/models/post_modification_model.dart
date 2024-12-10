@@ -11,6 +11,7 @@ class PostModificationModel with _$PostModificationModel {
   const factory PostModificationModel({
     required String title,
     required int buildingId,
+    required String locationDetail,
     required String description,
     required PostType type,
     required ItemCategory category,
@@ -23,6 +24,7 @@ class PostModificationModel with _$PostModificationModel {
       PostModificationModel(
         title: entity.title,
         buildingId: entity.building.id,
+        locationDetail: entity.locationDetail,
         description: entity.description,
         type: entity.type,
         category: entity.itemType,

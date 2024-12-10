@@ -16,4 +16,5 @@ abstract class PostEntity {
   DateTime get updatedAt;
   List<String> get images;
   BuildingEntity get building;
+  String get locationDetail;
 }

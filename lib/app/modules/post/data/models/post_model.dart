@@ -23,6 +23,7 @@ class PostModel with _$PostModel implements PostEntity {
     required DateTime updatedAt,
     required List<String> images,
     required BuildingModel building,
+    required String locationDetail,
   }) = _PostModel;
 
   factory PostModel.fromJson(Map<String, dynamic> json) =>
