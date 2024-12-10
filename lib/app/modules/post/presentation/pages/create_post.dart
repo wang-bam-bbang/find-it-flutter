@@ -180,6 +180,27 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                   ? const SizedBox()
                   : Column(
                       children: [
+                        BlocBuilder<BuildingListBloc, BuildingListState>(
+                            builder: (context, state) {
+                          return DropdownButtonFormField<BuildingEntity>(
+                            value: selectedBuilding,
+                            items: state.list
+                                .map((building) => DropdownMenuItem(
+                                      value: building,
+                                      child: Text(building.displayName),
+                                    ))
+                                .toList(),
+                            onChanged: (value) =>
+                                setState(() => selectedBuilding = value),
+                            decoration: InputDecoration(
+                              labelText: selectedType == PostType.lost
+                                  ? context.t.create.location_lost
+                                  : context.t.create.location_found,
+                              border: const OutlineInputBorder(),
+                            ),
+                          );
+                        }),
+                        const SizedBox(height: 16),
                         TextField(
                           controller: locationDetailController,
                           decoration: InputDecoration(
