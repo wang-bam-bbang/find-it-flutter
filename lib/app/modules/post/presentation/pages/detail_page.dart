@@ -304,8 +304,13 @@ class _LayoutState extends State<_Layout> {
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
                         ),
-                        child: const Center(
-                          child: DetailMap(),
+                        child: Center(
+                          child: DetailMap(
+                            point: GeoPoint.fromString(RegExp(r'(\d+\.?\d+)')
+                                .allMatches(widget.post.building.gps)
+                                .map((i) => i.group(1))
+                                .join(',')),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -386,29 +391,27 @@ class _LayoutState extends State<_Layout> {
 }
 
 class DetailMap extends StatefulWidget {
-  const DetailMap({super.key});
+  const DetailMap({super.key, required this.point});
+  final GeoPoint point;
 
   @override
   State<DetailMap> createState() => _DetailMapState();
 }
 
 class _DetailMapState extends State<DetailMap> {
-  final _controller = MapController.withUserPosition(
-    trackUserLocation: const UserTrackingOption(
-      enableTracking: true,
-      unFollowUser: false,
-    ),
-  );
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final _controller = MapController.withUserPosition();
 
   @override
   Widget build(BuildContext context) {
     return OSMFlutter(
       controller: _controller,
+      onMapIsReady: (_) {
+        _controller.addMarker(
+          widget.point,
+          markerIcon: const MarkerIcon(icon: Icon(Icons.location_on)),
+        );
+        _controller.moveTo(widget.point);
+      },
       osmOption: const OSMOption(
         zoomOption: ZoomOption(
           initZoom: 16,
