@@ -1,5 +1,6 @@
 import 'package:find_it/app/modules/post/domain/entities/post_creation_entity.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
+import 'package:find_it/app/modules/post/domain/entities/post_modification_entity.dart';
 import 'package:find_it/app/modules/post/domain/repositories/post_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -20,12 +21,25 @@ class CreatePostBloc extends Bloc<CreatePostEvent, CreatePostState> {
         emit(_Error(e.toString()));
       }
     });
+
+    on<_Modify>((event, emit) async {
+      emit(const _Loading());
+      try {
+        final post =
+            await _repository.modifyPost(id: event.id, post: event.entity);
+        emit(_Loaded(post));
+      } catch (e) {
+        emit(_Error(e.toString()));
+      }
+    });
   }
 }
 
 @freezed
 class CreatePostEvent with _$CreatePostEvent {
   const factory CreatePostEvent.create(PostCreationEntity entity) = _Create;
+  const factory CreatePostEvent.modify(int id, PostModificationEntity entity) =
+      _Modify;
 }
 
 @freezed
@@ -37,6 +51,7 @@ class CreatePostState with _$CreatePostState {
   const factory CreatePostState.loaded(PostEntity post) = _Loaded;
   const factory CreatePostState.error(String error) = _Error;
 
+  bool get isLoading => this is _Loading;
   bool get isLoaded => this is _Loaded;
   PostEntity get post => (this as _Loaded).post;
 }

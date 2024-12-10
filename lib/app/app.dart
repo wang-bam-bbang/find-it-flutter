@@ -16,7 +16,7 @@ class FindItApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: _router.config(),
-      locale: TranslationProvider.of(context).flutterLocale, // use provider
+      locale: TranslationProvider.of(context).flutterLocale,
       supportedLocales: AppLocaleUtils.supportedLocales,
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       builder: (context, child) => _Providers(

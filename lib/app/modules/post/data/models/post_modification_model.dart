@@ -1,34 +1,32 @@
-import 'package:find_it/app/modules/post/domain/entities/post_creation_entity.dart';
+import 'package:find_it/app/modules/post/domain/entities/post_modification_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'post_creation_model.freezed.dart';
-part 'post_creation_model.g.dart';
+part 'post_modification_model.freezed.dart';
+part 'post_modification_model.g.dart';
 
 @freezed
-class PostCreationModel with _$PostCreationModel {
-  const factory PostCreationModel({
+class PostModificationModel with _$PostModificationModel {
+  const factory PostModificationModel({
     required String title,
     required int buildingId,
     required String locationDetail,
     required String description,
     required PostType type,
     required ItemCategory category,
-    required List<String> images,
-  }) = _PostCreationModel;
+  }) = _PostModificationModel;
 
-  factory PostCreationModel.fromJson(Map<String, dynamic> json) =>
-      _$PostCreationModelFromJson(json);
-  factory PostCreationModel.fromEntity(
-          {required PostCreationEntity entity, required List<String> images}) =>
-      PostCreationModel(
+  factory PostModificationModel.fromJson(Map<String, dynamic> json) =>
+      _$PostModificationModelFromJson(json);
+  factory PostModificationModel.fromEntity(
+          {required PostModificationEntity entity}) =>
+      PostModificationModel(
         title: entity.title,
         buildingId: entity.building.id,
         locationDetail: entity.locationDetail,
         description: entity.description,
         type: entity.type,
         category: entity.itemType,
-        images: images,
       );
 }

@@ -28,6 +28,7 @@
   },
   "create": {
     "page_title": "게시글 작성",
+    "page_title_modify": "게시글 수정",
     "title": "게시글 제목",
     "post_type": "게시글 유형",
     "item_type": "분실문 종류",
@@ -36,6 +37,7 @@
     "description": "설명",
     "image": "이미지 업로드",
     "image_empty": "이미지가 없습니다.",
-    "submit": "작성하기"
+    "submit": "작성하기",
+    "modify": "수정하기"
   }
 }

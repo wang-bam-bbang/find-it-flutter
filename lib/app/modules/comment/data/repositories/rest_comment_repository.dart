@@ -27,8 +27,7 @@ class RestCommentRepository implements CommentRepository {
 
   @override
   Future<void> delete(CommentEntity comment) {
-    // TODO: implement delete
-    throw UnimplementedError();
+    return _api.deleteComment(comment.id);
   }
 
   @override
