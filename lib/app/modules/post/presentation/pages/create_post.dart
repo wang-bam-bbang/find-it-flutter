@@ -129,8 +129,7 @@ class _CreatePostPageState extends State<_CreatePostPage> {
         )));
     await blocker;
     if (!mounted) return;
-    context.maybePop();
-    context.router.popForced();
+    context.router.popUntilRoot();
     DetailRoute(post: bloc.state.post).push(context);
   }
 
