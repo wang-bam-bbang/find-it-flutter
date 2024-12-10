@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:find_it/app/di/locator.dart';
+import 'package:find_it/app/modules/building/domain/entities/building_entity.dart';
+import 'package:find_it/app/modules/building/presentation/bloc/building_list_bloc.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_creation_entity.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_modification_entity.dart';
@@ -22,8 +24,13 @@ class CreatePostPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<CreatePostBloc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<CreatePostBloc>()),
+        BlocProvider(
+            create: (_) =>
+                sl<BuildingListBloc>()..add(const BuildingListEvent.fetch())),
+      ],
       child: _CreatePostPage(post),
     );
   }
@@ -41,13 +48,14 @@ class _CreatePostPage extends StatefulWidget {
 class _CreatePostPageState extends State<_CreatePostPage> {
   PostType? selectedType;
   ItemCategory? selectedCategory;
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController locationController = TextEditingController();
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final locationDetailController = TextEditingController();
   List<XFile> uploadedImages = [];
 
   final List<ItemCategory> categories = ItemCategory.values;
   final List<PostType> postTypes = PostType.values;
+  BuildingEntity? selectedBuilding;
 
   @override
   void initState() {
@@ -59,7 +67,8 @@ class _CreatePostPageState extends State<_CreatePostPage> {
       selectedCategory = post.category;
       titleController.text = post.title;
       descriptionController.text = post.description;
-      locationController.text = post.location;
+      selectedBuilding = post.building;
+      locationDetailController.text = post.locationDetail;
     }
   }
 
@@ -78,13 +87,16 @@ class _CreatePostPageState extends State<_CreatePostPage> {
     if (selectedCategory == null) return;
     if (titleController.text.isEmpty) return;
     if (descriptionController.text.isEmpty) return;
+    if (selectedBuilding == null) return;
+    if (locationDetailController.text.isEmpty) return;
 
     final bloc = context.read<CreatePostBloc>();
     final blocker = bloc.stream.firstWhere((s) => s.isLoaded);
     bloc.add(CreatePostEvent.create(PostCreationEntity(
       title: titleController.text,
       type: selectedType!,
-      location: locationController.text,
+      building: selectedBuilding!,
+      locationDetail: locationDetailController.text,
       itemType: selectedCategory!,
       description: descriptionController.text,
       image: uploadedImages.map((img) => File(img.path)).toList(),
@@ -100,6 +112,8 @@ class _CreatePostPageState extends State<_CreatePostPage> {
     if (selectedCategory == null) return;
     if (titleController.text.isEmpty) return;
     if (descriptionController.text.isEmpty) return;
+    if (selectedBuilding == null) return;
+    if (locationDetailController.text.isEmpty) return;
 
     final bloc = context.read<CreatePostBloc>();
     final blocker = bloc.stream.firstWhere((s) => s.isLoaded);
@@ -108,14 +122,14 @@ class _CreatePostPageState extends State<_CreatePostPage> {
         PostModificationEntity(
           title: titleController.text,
           type: selectedType!,
-          location: locationController.text,
+          building: selectedBuilding!,
+          locationDetail: locationDetailController.text,
           itemType: selectedCategory!,
           description: descriptionController.text,
         )));
     await blocker;
     if (!mounted) return;
-    context.maybePop();
-    context.router.popForced();
+    context.router.popUntilRoot();
     DetailRoute(post: bloc.state.post).push(context);
   }
 
@@ -165,8 +179,29 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                   ? const SizedBox()
                   : Column(
                       children: [
+                        BlocBuilder<BuildingListBloc, BuildingListState>(
+                            builder: (context, state) {
+                          return DropdownButtonFormField<BuildingEntity>(
+                            value: selectedBuilding,
+                            items: state.list
+                                .map((building) => DropdownMenuItem(
+                                      value: building,
+                                      child: Text(building.displayName),
+                                    ))
+                                .toList(),
+                            onChanged: (value) =>
+                                setState(() => selectedBuilding = value),
+                            decoration: InputDecoration(
+                              labelText: selectedType == PostType.lost
+                                  ? context.t.create.location_lost
+                                  : context.t.create.location_found,
+                              border: const OutlineInputBorder(),
+                            ),
+                          );
+                        }),
+                        const SizedBox(height: 16),
                         TextField(
-                          controller: locationController,
+                          controller: locationDetailController,
                           decoration: InputDecoration(
                             labelText: selectedType == PostType.lost
                                 ? context.t.create.location_lost
@@ -236,11 +271,30 @@ class _CreatePostPageState extends State<_CreatePostPage> {
                     : Text(context.t.create.image_empty),
               ],
               const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: widget.post == null ? _create : _modify,
-                child: widget.post == null
-                    ? Text(context.t.create.submit)
-                    : Text(context.t.create.modify),
+              BlocBuilder<CreatePostBloc, CreatePostState>(
+                builder: (context, state) => Stack(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(56),
+                      ),
+                      onPressed: state.isLoading
+                          ? null
+                          : widget.post == null
+                              ? _create
+                              : _modify,
+                      child: widget.post == null
+                          ? Text(context.t.create.submit)
+                          : Text(context.t.create.modify),
+                    ),
+                    if (state.isLoading)
+                      const Positioned.fill(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ],
           ),

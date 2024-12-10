@@ -12,8 +12,6 @@ class BuildingModel with _$BuildingModel implements BuildingEntity {
     required String enName,
     required String gps,
     required String code,
-    required DateTime createdAt,
-    required DateTime updatedAt,
   }) = _BuildingModel;
 
   factory BuildingModel.fromJson(Map<String, dynamic> json) =>

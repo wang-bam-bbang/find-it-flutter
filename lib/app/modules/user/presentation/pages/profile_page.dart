@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:find_it/app/di/locator.dart';
+import 'package:find_it/app/modules/building/domain/entities/building_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/post_type.dart' as domain;
 import 'package:find_it/app/modules/post/presentation/bloc/post_list_bloc.dart';
 import 'package:find_it/app/modules/user/domain/entities/user_entity.dart';
@@ -257,7 +258,7 @@ class _ListView extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Text(
-                '${item.location}\n${DateFormat.yMd().format(item.createdAt)}'),
+                '${item.building.displayName}\n${DateFormat.yMd().format(item.createdAt)}'),
             isThreeLine: true,
             onTap: () {
               DetailRoute(post: item).push(context);

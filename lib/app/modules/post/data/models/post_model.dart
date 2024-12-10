@@ -1,3 +1,4 @@
+import 'package:find_it/app/modules/building/data/models/building_model.dart';
 import 'package:find_it/app/modules/post/data/models/public_user_model.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
 import 'package:find_it/app/modules/post/domain/enums/item_category.dart';
@@ -15,13 +16,14 @@ class PostModel with _$PostModel implements PostEntity {
     required PostType type,
     required String title,
     required String description,
-    required String location,
     required ItemCategory category,
     required PostStatus status,
     required PublicUserModel author,
     required DateTime createdAt,
     required DateTime updatedAt,
     required List<String> images,
+    required BuildingModel building,
+    required String locationDetail,
   }) = _PostModel;
 
   factory PostModel.fromJson(Map<String, dynamic> json) =>

@@ -51,6 +51,7 @@ class CreatePostState with _$CreatePostState {
   const factory CreatePostState.loaded(PostEntity post) = _Loaded;
   const factory CreatePostState.error(String error) = _Error;
 
+  bool get isLoading => this is _Loading;
   bool get isLoaded => this is _Loaded;
   PostEntity get post => (this as _Loaded).post;
 }

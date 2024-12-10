@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:find_it/app/di/locator.dart';
+import 'package:find_it/app/modules/building/domain/entities/building_entity.dart';
 import 'package:find_it/app/modules/comment/domain/entities/comment_entity.dart';
 import 'package:find_it/app/modules/comment/presentation/bloc/comment_bloc.dart';
 import 'package:find_it/app/modules/post/domain/entities/post_entity.dart';
@@ -68,8 +69,11 @@ class _LayoutState extends State<_Layout> {
     }
   }
 
-  Widget _buildComment(CommentEntity comment, int commentIndex,
-      {bool isReply = false}) {
+  Widget _buildComment(
+    CommentEntity comment,
+    int commentIndex, {
+    bool isReply = false,
+  }) {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(bottom: 4, left: isReply ? 12 : 0),
@@ -110,16 +114,27 @@ class _LayoutState extends State<_Layout> {
                         children: [
                           const Icon(Icons.account_circle, size: 24),
                           const SizedBox(width: 8),
-                          Text(
-                            comment.author.name,
-                            style: const TextStyle(
-                                fontSize: 16, color: Colors.black87),
-                          )
+                          Expanded(
+                            child: Text(
+                              comment.author.name,
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.black87),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          if (UserBloc.userOrNull(context)?.uuid ==
+                              comment.author.uuid)
+                            IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () => context
+                                  .read<CommentBloc>()
+                                  .add(CommentEvent.delete(comment)),
+                            ),
                         ],
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        comment.content,
+                        comment.isDeleted ? '삭제' : comment.content,
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.black87,
@@ -272,13 +287,13 @@ class _LayoutState extends State<_Layout> {
                     const SizedBox(height: 8),
                     if (widget.post.type == PostType.found) ...[
                       Text(
-                        '발견 위치: ${widget.post.location}',
+                        '발견 위치: ${widget.post.building.displayName}',
                         style: const TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 16),
                     ] else ...[
                       Text(
-                        '예상 분실 위치: ${widget.post.location}',
+                        '예상 분실 위치: ${widget.post.building.displayName}',
                         style: const TextStyle(fontSize: 16),
                       ),
                       const SizedBox(height: 16),
@@ -296,15 +311,18 @@ class _LayoutState extends State<_Layout> {
                         ),
                         child: Center(child: Image.network(image)),
                       ),
-                    if (widget.post.type == PostType.found) ...[
+                    if (widget.post.type == PostType.found &&
+                        widget.post.building.point != null) ...[
                       const SizedBox(height: 16),
                       Container(
                         height: 250,
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
                         ),
-                        child: const Center(
-                          child: DetailMap(),
+                        child: Center(
+                          child: DetailMap(
+                            point: widget.post.building.point!,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -385,29 +403,27 @@ class _LayoutState extends State<_Layout> {
 }
 
 class DetailMap extends StatefulWidget {
-  const DetailMap({super.key});
+  const DetailMap({super.key, required this.point});
+  final GeoPoint point;
 
   @override
   State<DetailMap> createState() => _DetailMapState();
 }
 
 class _DetailMapState extends State<DetailMap> {
-  final _controller = MapController.withUserPosition(
-    trackUserLocation: const UserTrackingOption(
-      enableTracking: true,
-      unFollowUser: false,
-    ),
-  );
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final _controller = MapController.withUserPosition();
 
   @override
   Widget build(BuildContext context) {
     return OSMFlutter(
       controller: _controller,
+      onMapIsReady: (_) {
+        _controller.addMarker(
+          widget.point,
+          markerIcon: const MarkerIcon(icon: Icon(Icons.location_on)),
+        );
+        _controller.moveTo(widget.point);
+      },
       osmOption: const OSMOption(
         zoomOption: ZoomOption(
           initZoom: 16,
