@@ -94,57 +94,72 @@ class _LayoutState extends State<_Layout> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey[400]!, width: 1.5),
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.account_circle, size: 24),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              comment.author.name,
-                              style: const TextStyle(
-                                  fontSize: 16, color: Colors.black87),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          if (UserBloc.userOrNull(context)?.uuid ==
-                              comment.author.uuid)
-                            IconButton(
-                              icon: const Icon(Icons.close),
-                              onPressed: () => context
-                                  .read<CommentBloc>()
-                                  .add(CommentEvent.delete(comment)),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        comment.isDeleted ? '삭제' : comment.content,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey[400]!, width: 1.5),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.account_circle, size: 24),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                comment.author.name,
+                                style: const TextStyle(
+                                    fontSize: 16, color: Colors.black87),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            if (UserBloc.userOrNull(context)?.uuid ==
+                                    comment.author.uuid &&
+                                !comment.isDeleted)
+                              SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: IconButton(
+                                  padding: EdgeInsets.zero,
+                                  icon: const Icon(Icons.close, size: 20),
+                                  onPressed: () => context
+                                      .read<CommentBloc>()
+                                      .add(CommentEvent.delete(comment)),
+                                ),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          comment.isDeleted ? '삭제된 댓글입니다.' : comment.content,
+                          style: comment.isDeleted
+                              ? const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.w600,
+                                )
+                              : const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
+                        ),
+                      ],
+                    )),
                 const SizedBox(height: 8),
-                if (!isReply && (_showReplyField[commentIndex] != true)) ...[
+                if (!isReply &&
+                    (_showReplyField[commentIndex] != true) &&
+                    !comment.isDeleted) ...[
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
@@ -298,17 +313,16 @@ class _LayoutState extends State<_Layout> {
                       ),
                       const SizedBox(height: 16),
                     ],
+                    const Divider(),
+                    const SizedBox(height: 16),
                     Text(
                       widget.post.description,
                       style: const TextStyle(fontSize: 16),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 32),
                     for (final image in widget.post.images)
-                      Container(
+                      SizedBox(
                         height: 250,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                        ),
                         child: Center(child: Image.network(image)),
                       ),
                     if (widget.post.type == PostType.found &&
@@ -318,6 +332,7 @@ class _LayoutState extends State<_Layout> {
                         height: 250,
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Center(
                           child: DetailMap(
