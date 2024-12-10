@@ -134,7 +134,7 @@ class _LayoutState extends State<_Layout> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        comment.content,
+                        comment.isDeleted ? '삭제' : comment.content,
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.black87,
